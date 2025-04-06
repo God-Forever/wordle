@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Wordle</title>
-    <link rel="stylesheet" href="icon.css">
+    <link rel="stylesheet" href="\icon.css">
     <style>
         body {
             background-color: #f8f8ff;
@@ -371,7 +371,7 @@
         let currentTile = 0;
         let guess = '';
         let words = [];
-        fetch('wordlist.json')
+        fetch('\wordlist.json')
         .then(response => {
             if (!response.ok) {
                 throw new Error('\'wordlist.json\' non exist.');

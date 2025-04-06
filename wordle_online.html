@@ -1,0 +1,548 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Wordle</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <style>
+        body {
+            background-color: #f8f8ff;
+        }
+        .game-container {
+            position: absolute;
+            top: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .board {
+            margin-top: 23px;
+            display: grid;
+            margin-bottom: 23px;
+        }
+        .board-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        .tile {
+            font-family: sans-serif;
+            color: #334;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 2px solid #d3d6da;
+            border-radius: 6px;
+            font-size: 26px;
+            font-weight: bold;
+            background-color: #eef;
+        }
+        .keyboard {
+            display: grid;
+        }
+        .keyboard-row {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+        .key {
+            font-family: sans-serif;
+            color: #334;
+            width: 71px;
+            height: 52.5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            background-color: #dde;
+            outline: none;
+            font-size: 21.5px;
+            font-weight: bold;
+        }
+        .key:hover {
+            background-color: #ccd;
+        }
+        .key:active {
+            background-color: #bbc;
+        }
+        .bs-key {
+            width: 110.5px;
+            height: 52.5px;
+            display: flex;
+            color: #f8f8ff;
+            justify-content: center;
+            align-items: center;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            background-color: #78f;
+            outline: none;
+            font-size: 25px;
+            font-weight: bold;
+        }
+        .bs-key:hover {
+            background-color: #67e;
+        }
+        .bs-key:active {
+            background-color: #56d;
+        }
+        .et-key {
+            font-family: sans-serif;
+            width: 110.5px;
+            height: 52.5px;
+            display: flex;
+            color: #f8f8ff;
+            justify-content: center;
+            align-items: center;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            background-color: #78f;
+            outline: none;
+            font-size: 21.5px;
+            font-weight: bold;
+        }
+        .et-key:hover {
+            background-color: #67e;
+        }
+        .et-key:active {
+            background-color: #56d;
+        }
+        .gy-key {
+            font-family: sans-serif;
+            width: 71px;
+            height: 52.5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            background-color: #aac;
+            outline: none;
+            color: #f8f8ff;
+            font-size: 21.5px;
+            font-weight: bold;
+        }
+        .gy-key:hover {
+            background-color: #99b;
+        }
+        .gy-key:active {
+            background-color: #88a;
+        }
+        .ye-key {
+            font-family: sans-serif;
+            width: 71px;
+            height: 52.5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            background-color: #ec3;
+            outline: none;
+            color: #f8f8ff;
+            font-size: 21.5px;
+            font-weight: bold;
+        }
+        .ye-key:hover {
+            background-color: #db2;
+        }
+        .ye-key:active {
+            background-color: #ca1;
+        }
+        .gr-key {
+            font-family: sans-serif;
+            width: 71px;
+            height: 52.5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            background-color: #4b4;
+            outline: none;
+            color: #f8f8ff;
+            font-size: 21.5px;
+            font-weight: bold;
+        }
+        .gr-key:hover {
+            background-color: #3a3;
+        }
+        .gr-key:active {
+            background-color: #292;
+        }
+        .win-lost {
+            margin-top: 20px;
+            justify-content: center;
+            font-family: 'Arial', sans-serif;
+            display: none;
+            font-size: 26px;
+            font-weight: bold;
+            ;
+        }
+        #settingsBtn {
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            top: 20px;
+            outline: none;
+            left: 50%;
+            border-radius: 6px;
+            width: 40px;
+            height: 40px;
+            transform: translateX(351px);
+            background-color: #e5e5f5;
+            color: #556;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+        }
+        #settingsBtn:hover {
+            color: #78f;
+            background-color: #ddf;
+        }
+        #settingsBtn:active {
+            color: #67e;
+            background-color: #cce;
+        }
+        #reDo {
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            top: 20px;
+            outline: none;
+            left: 50%;
+            border-radius: 6px;
+            width: 40px;
+            height: 40px;
+            transform: translateX(304px);
+            background-color: #e5e5f5;
+            color: #556;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+        }
+        #reDo:hover {
+            color: #78f;
+            background-color: #ddf;
+        }
+        #reDo:active {
+            color: #67e;
+            background-color: #cce;
+        }
+        #giveUp {
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            top: 20px;
+            outline: none;
+            left: 50%;
+            border-radius: 6px;
+            width: 100px;
+            height: 40px;
+            transform: translateX(197px);
+            background-color: #e5e5f5;
+            color: #556;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            font-family: sans-serif;
+            font-weight: bold;
+        }
+        #giveUp:hover {
+            color: #78f;
+            background-color: #ddf;
+        }
+        #giveUp:active {
+            color: #67e;
+            background-color: #cce;
+        }
+        .overlay {
+            display: none;
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+        .popup-content {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            text-align: center;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            z-index: 1001;
+            width: 300px;
+            //height: 300px;
+            overflow-y: auto;
+            font-size: 20px;
+            font-family: sans-serif;
+        }
+        .close-btn {
+            position: absolute;
+            top: 2px;
+            right: 10px;
+            cursor: pointer;
+            font-size: 24px;
+            color: #aaa;
+        }
+        .close-btn:hover {
+            color: #999;
+        }
+        .close-btn:hover {
+            color: #888;
+        }
+        #answerWord {
+            text-transform: uppercase;
+            vertical-align: top;
+            border-radius: 5px;
+            background: #f1f3f9;
+            padding: 10px;
+            border: 1px dashed #75819e;
+            color: #334;
+            font-size: 25px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div id="overlay" class="overlay">
+        <div class="popup-content">
+            <span class="close-btn" id="closePopup">&times;</span>
+            <div style="margin-bottom: 20px; margin-top: 20px; font-weight: bold;">Answer:</div>
+            <div id="answerWord"></div>
+            <div style="margin-bottom: 20px; margin-top: 20px; font-weight: bold;">Meaning:</div>
+            <div style="display:flex;justify-content: center;margin-bottom: 20px; ">
+                <div>[</div>
+                <div id="answerPart"></div>
+                <div>.]</div>
+                <div id="answerMean"></div>
+            </div>
+        </div>
+    </div>
+    <div id="lost" class="win-lost">💔
+        <div style="font-size: 30px; margin-top: 2px;">&nbsp;You&nbsp;</div>
+        <div style="font-size: 30px; color: #aac; margin-top: 2px;">LOST</div>
+        <div style="font-size: 30px; margin-top: 2px;">&nbsp;!&nbsp;</div>💔
+    </div>
+    <div id="win" class="win-lost">🏆
+        <div style="font-size: 30px; margin-top: 2px;">&nbsp;You&nbsp;</div>
+        <div style="font-size: 30px; color: #4b4; margin-top: 2px;">WON</div>
+        <div style="font-size: 30px; margin-top: 2px;">&nbsp;!&nbsp;</div>🏆
+    </div>
+    <div id="giveUp">Answer</div>
+    <div id="settingsBtn" class="fa fa-cog"></div>
+    <div id="reDo" class="fa fa-redo"></div>
+    <div class="game-container">
+
+        <div id="board" class="board">
+        </div>
+        <div id="keyboard" class="keyboard">
+        </div>
+    </div>
+    <script>
+        const keyboardLayout = [
+            'QWERTYUIOP',
+            'ASDFGHJKL',
+            '⌫ZXCVBNM↵'
+        ];
+        let isWin = false;
+        let targetWord = 'TRACE';
+        let length = 5;
+        let currentRow = 0;
+        let currentTile = 0;
+        let guess = '';
+        let words = [];
+        fetch('\wordlist.json')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('\'wordlist.json\' non exist.');
+            }
+            return response.json();
+        })
+        .then(data => {
+            words = data;
+            document.getElementById('reDo').addEventListener('click', () => init());
+            init();
+        })
+        .catch(error => {
+            console.error('Error to read \'wordlist.json\':', error);
+        });
+        document.getElementById('giveUp').addEventListener('click', () => {
+            currentRow = 6;
+            if (isWin) {
+                const result = document.getElementById('win');
+                result.style.display = 'flex';
+            }
+            else if (currentRow == 6) {
+                const result = document.getElementById('lost');
+                result.style.display = 'flex';
+            }
+            document.getElementById('overlay').style.display = 'block';
+        });
+        document.getElementById('closePopup').addEventListener('click', () => document.getElementById('overlay').style.display = 'none');
+        function createBoard() {
+            const board = document.getElementById('board');
+            board.innerHTML = '';
+            for (let i = 0; i < 6; i++) {
+                const row = document.createElement('div');
+                row.className = 'board-row';
+                for (let j = 0; j < length; j++) {
+                    const tile = document.createElement('div');
+                    tile.className = 'tile';
+                    row.appendChild(tile);
+                }
+                board.appendChild(row);
+            }
+        }
+        function handleSubmit() {
+            let result = '0'.repeat(length);
+            if (currentRow < 6) {
+                for (let i = 0; i < length; i++) {
+                    if (guess[i] === targetWord[i]) result = result.substring(0, i) + '2' + result.substring(i + 1);
+                    else for (let j = 0; j < guess.length; j++) {
+                        if (guess[j] === targetWord[i] && result[j] === '0') {
+                            result = result.substring(0, j) + '1' + result.substring(j + 1);
+                            break;
+                        }
+                    }
+                }
+                if (result === '2'.repeat(length)) {
+                    isWin = true;
+                }
+                const rows = document.querySelectorAll('.board-row');
+                const tiles = rows[currentRow].querySelectorAll('.tile');
+                for (let i = 0; i < length; i++) {
+                    const key = document.getElementById(guess[i]);
+                    if (result[i] === '0') {
+                        tiles[i].style.color = '#f8f8ff';
+                        tiles[i].style.backgroundColor = '#aac';
+                        tiles[i].style.border = '2px solid #aac';
+                        if (key.className === 'key') {
+                            key.className = 'gy-key';
+                        }
+                    }
+                    else if (result[i] === '1') {
+                        tiles[i].style.color = '#f8f8ff';
+                        tiles[i].style.backgroundColor = '#ec3';
+                        tiles[i].style.border = '2px solid #ec3';
+                        if (key.className != 'gr-key') {
+                            key.className = 'ye-key';
+                        }
+                    }
+                    else {
+                        tiles[i].style.color = '#f8f8ff';
+                        tiles[i].style.backgroundColor = '#4b4';
+                        tiles[i].style.border = '2px solid #4b4';
+                        key.className = 'gr-key';
+                    }
+                }
+                guess = '';
+                currentTile = 0;
+                currentRow++;
+                if (isWin) {
+                    const result = document.getElementById('win');
+                    result.style.display = 'flex';
+                }
+                else if (currentRow == 6) {
+                    const result = document.getElementById('lost');
+                    result.style.display = 'flex';
+                }
+            }
+        }
+        function updateTile(key) {
+            if (isWin) return;
+            if (currentRow == 6) return;
+            const rows = document.querySelectorAll('.board-row');
+            const tiles = rows[currentRow].querySelectorAll('.tile');
+            if (key === '⌫') {
+                if (currentTile > 0) {
+                    guess = guess.slice(0, -1);
+                    currentTile--;
+                    tiles[currentTile].textContent = '';
+                }
+            }
+            else if (key === '↵') {
+                if (currentTile == length) {
+                    handleSubmit();
+                }
+            }
+            else {
+                if (currentTile < length) {
+                    guess += key;
+                    tiles[currentTile].textContent = key;
+                    currentTile++;
+                }
+            }
+        }
+        function createKeyboard() {
+            const board = document.getElementById('keyboard');
+            board.innerHTML = '';
+            for (let i = 0; i < keyboardLayout.length; i++) {
+                const row = document.createElement('div');
+                row.className = 'keyboard-row';
+                for (let j = 0; j < keyboardLayout[i].length; j++) {
+                    const char = keyboardLayout[i][j];
+                    const key = document.createElement('div');
+                    key.className = char === '⌫' ? 'bs-key' : char === '↵' ? 'et-key' : 'key';
+                    if (char === '⌫') {
+                        const icon = document.createElement('i');
+                        icon.className = 'fa fa-backspace';
+                        key.appendChild(icon);
+                    }
+                    else
+                    {
+                        key.textContent = char === '↵' ? 'Enter' : char;
+                    }
+                    key.id = char;
+                    key.addEventListener('click', () => updateTile(char));
+                    row.appendChild(key);
+                }
+                board.appendChild(row);
+            }
+        }
+        function init() {
+            isWin = false;
+            let target=words[length];
+            const randomIndex = Math.floor(Math.random() * target.length);
+            targetWord = target[randomIndex].word.toUpperCase();
+            document.getElementById('answerWord').textContent = targetWord;
+            document.getElementById('answerPart').textContent = target[randomIndex].partofspeech;
+            document.getElementById('answerMean').textContent = target[randomIndex].chinesemeaning;
+            console.log(words);
+            currentRow = 0;
+            currentTile = 0;
+            guess = '';
+            document.getElementById('win').style.display = 'none';
+            document.getElementById('lost').style.display = 'none';
+            createBoard();
+            createKeyboard();
+        }
+        document.addEventListener('keydown', (e) => {
+            if ((e.key.match(/^[a-z]$/i) || e.key === 'Backspace' || e.key === 'Enter') && !event.ctrlKey && !event.altKey && !event.shiftKey) {
+                const key = e.key === 'Backspace' ? '⌫' : e.key === 'Enter' ? '↵' : e.key.toUpperCase();
+                console.log(key);
+                updateTile(key);
+            }
+        });
+    </script>
+</body>
+</html>
