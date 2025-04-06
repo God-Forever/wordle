@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Wordle</title>
-    <link rel="stylesheet" href="\icon.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     <style>
         body {
             background-color: #f8f8ff;
@@ -371,7 +371,7 @@
         let currentTile = 0;
         let guess = '';
         let words = [];
-        fetch('\wordlist.json')
+        /*fetch('\wordlist.json')
         .then(response => {
             if (!response.ok) {
                 throw new Error('\'wordlist.json\' non exist.');
@@ -385,7 +385,68 @@
         })
         .catch(error => {
             console.error('Error to read \'wordlist.json\':', error);
-        });
+        });*/
+        let jsonString= `
+{
+ "4": [
+   {
+     "word": "tree",
+     "partofspeech": "n",
+     "chinesemeaning": "树"
+   }
+ ],
+ "5": [
+   {
+     "word": "river",
+     "partofspeech": "n",
+     "chinesemeaning": "河流"
+   },
+   {
+     "word": "trace",
+     "partofspeech": "v",
+     "chinesemeaning": "追踪"
+   }
+ ],
+ "6": [],
+ "7": [],
+ "8": [
+   {
+     "word": "mountain",
+     "partofspeech": "n",
+     "chinesemeaning": "山脉"
+   },
+   {
+     "word": "elephant",
+     "partofspeech": "n",
+     "chinesemeaning": "大象"
+   }
+ ],
+ "9": [
+   {
+     "word": "beautiful",
+     "partofspeech": "adj",
+     "chinesemeaning": "美丽的"
+   }
+ ],
+ "10": [
+   {
+     "word": "understand",
+     "partofspeech": "v",
+     "chinesemeaning": "理解"
+   }
+ ],
+ "11": [
+   {
+     "word": "confidence",
+     "partofspeech": "n",
+     "chinesemeaning": "信心"
+   }
+ ]
+}
+`;
+        words = JSON.parse(jsonString);
+        document.getElementById('reDo').addEventListener('click', () => init());
+        init();
         document.getElementById('giveUp').addEventListener('click', () => {
             currentRow = 6;
             if (isWin) {
