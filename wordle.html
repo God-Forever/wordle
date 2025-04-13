@@ -397,7 +397,7 @@
             top: 20px;
             outline: none;
             border-radius: 6px;
-            margin: 0 auto;
+            margin-right: auto;
             width: 80px;
             height: 40px;
             background-color: #78f;
@@ -527,6 +527,35 @@
         .slider.round:before {
             border-radius: 50%;
         }
+        #Share {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            top: 20px;
+            outline: none;
+            border-radius: 6px;
+            margin-left: auto;
+            width: 80px;
+            height: 40px;
+            background-color: #78f;
+            color: #f8f8ff;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            transition: background-color 0.2s ease;
+        }
+        #Share:hover {
+            background-color: #67e;
+        }
+        #Share:active {
+            background-color: #56d;
+        }
+        #cpd {
+            font-size: 15px;
+            color:#4b4;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
     </style>
 </head>
 <body>
@@ -540,7 +569,14 @@
             <div style="display:flex; justify-content: center; margin-bottom: 20px; margin-left: 12px; margin-right: 12px; ">
                 <div class="code-box" id="answerMean"></div>
             </div>
-            <div class="fa fa-redo" id="RedoPopup" style="margin-bottom: 10px; "></div>
+            <div style="display:flex;align-items: center;">
+                <div id="cpd" style="position:absolute;bottom:42px; left:37px;">Link Copied!</div>
+                <div style="width:100%;display:flex;gap: 20px;">
+                    <div class="fa fa-share" id="Share" style="margin-bottom: 10px; "></div>
+                    <div class="fa fa-redo" id="RedoPopup" style="margin-bottom: 10px; "></div>
+                </div>
+            </div>
+
         </div>
     </div>
     <div id="settinglay" class="overlay">
@@ -590,6 +626,55 @@
     <script src="javascript/mini_wordlist.js"></script>
     <script src="javascript/word_meanings.js"></script>
     <script>
+        let cpms=[];
+        function copyToClipboard(text) {
+            if (navigator.clipboard && window.isSecureContext) {
+                cpms.forEach(element => clearTimeout(element));
+                cpms=[];
+                document.getElementById('cpd').style.color='#4B4';
+                document.getElementById('cpd').textContent='Link Copied!';
+                document.getElementById('cpd').style.opacity=1;
+                cpms.push(setTimeout(()=>{document.getElementById('cpd').style.opacity = '0';},1000));
+                return navigator.clipboard.writeText(text);
+            } else {
+                const textArea = document.createElement("textarea");
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                try {
+                    const successful = document.execCommand('copy');
+                    if (!successful) {
+                        cpms.forEach(element => clearTimeout(element));
+                        cpms=[];
+                        document.getElementById('cpd').style.color='#f77';
+                        document.getElementById('cpd').textContent='Copy failed!';
+                        document.getElementById('cpd').style.opacity=1;
+                        cpms.push(setTimeout(()=> {document.getElementById('cpd').style.opacity = '0';},1000));
+                    }
+                    else
+                    {
+                        cpms.forEach(element => clearTimeout(element));
+                        cpms=[];
+                        document.getElementById('cpd').style.color='#4B4';
+                        document.getElementById('cpd').textContent='Copy failed!';
+                        document.getElementById('cpd').style.opacity=1;
+                        cpms.push(setTimeout(()=> {document.getElementById('cpd').style.opacity = '0';},1000));
+                    }
+                } catch (err) {
+                    cpms.forEach(element => clearTimeout(element));
+                    cpms=[];
+                    document.getElementById('cpd').style.color='#f77';
+                    document.getElementById('cpd').textContent='Failed to copy!';
+                    document.getElementById('cpd').style.opacity=1;
+                    cpms.push(setTimeout(()=> {document.getElementById('cpd').style.opacity = '0';},1000));
+                }
+                document.body.removeChild(textArea);
+            }
+        }
+        function copylink() {
+            copyToClipboard(window.location.origin + window.location.pathname + "?"+encode62(targetWord));
+        }
         function generateOptions() {
             var container = document.getElementById('options-container');
             container.innerHTML = '';
@@ -774,6 +859,9 @@
             costom = false;
             init();
         });
+        document.getElementById('Share').addEventListener('click', () => {
+            copylink();
+        });
         document.getElementById('reDo').addEventListener('click', () => {costom = false;init()});
         init();
         document.getElementById('giveUp').addEventListener('click', () => {
@@ -838,7 +926,7 @@
                 messages.forEach(element => clearTimeout(element));
                 messages=[];
                 mess.style.color='#f77';
-                mess.textContent='To short.';
+                mess.textContent='To short!';
                 mess.style.visibility = 'visible';
                 mess.style.opacity = '1';
                 messages.push(setTimeout(()=> {
@@ -854,7 +942,7 @@
                 messages.forEach(element => clearTimeout(element));
                 messages=[];
                 mess.style.color='#f77';
-                mess.textContent='Word not found.';
+                mess.textContent='Word not found!';
                 mess.style.visibility = 'visible';
                 mess.style.opacity = '1';
                 messages.push(setTimeout(()=> {
@@ -1014,7 +1102,7 @@
             }
             else
             {
-                document.getElementById('answerMean').textContent = meaning[targetWord];
+                document.getElementById('answerMean').textContent = meaning[targetWord]===undefined?"暂无译义":meaning[targetWord];
             }
             let contain = document.getElementById('answerWord');
             contain.innerHTML = '';
@@ -1041,7 +1129,7 @@
             createKeyboard();
         }
         document.addEventListener('keydown', (e) => {
-            if ((e.key.match(/^[a-z]$/i) || e.key === 'Backspace' || e.key === 'Enter') && !event.ctrlKey && !event.altKey) {
+            if ((e.key.match(/^[a-z]$/i) || e.key === 'Backspace' || e.key === 'Enter') && !event.ctrlKey && !event.altKey && !event.shiftKey) {
                 const key = e.key === 'Backspace' ? '\u232b' : e.key === 'Enter' ? '\u21b5' : e.key.toUpperCase();
                 updateTile(key);
             }
