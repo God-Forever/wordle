@@ -1041,7 +1041,7 @@
             createKeyboard();
         }
         document.addEventListener('keydown', (e) => {
-            if ((e.key.match(/^[a-z]$/i) || e.key === 'Backspace' || e.key === 'Enter') && !event.ctrlKey && !event.altKey && !event.shiftKey) {
+            if ((e.key.match(/^[a-z]$/i) || e.key === 'Backspace' || e.key === 'Enter') && !event.ctrlKey && !event.altKey) {
                 const key = e.key === 'Backspace' ? '\u232b' : e.key === 'Enter' ? '\u21b5' : e.key.toUpperCase();
                 updateTile(key);
             }
