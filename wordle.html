@@ -1,12 +1,18 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Wordle</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link rel="stylesheet" href="css/icon.css">
+    <link rel="stylesheet" href="css/font.css">
     <style>
         body {
+            font-family: 'Montserrat', 'Open Sans', sans-serif;
             background-color: #f8f8ff;
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
         }
         .game-container {
             position: absolute;
@@ -28,7 +34,7 @@
             margin-bottom: 8px;
         }
         .tile {
-            font-family: sans-serif;
+            font-family: 'Open Sans', 'Montserrat', sans-serif;
             color: #334;
             width: 60px;
             height: 60px;
@@ -40,6 +46,50 @@
             font-size: 26px;
             font-weight: bold;
             background-color: #eef;
+            transition: background-color 0.2s ease;
+            transition: border 0.2s ease;
+        }
+        .Tile {
+            font-family: 'Open Sans', 'Montserrat', sans-serif;
+            color: #334;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: bold;
+            color: #f8f8ff;
+            background-color: #aac;
+        }
+        .yeTile {
+            font-family: 'Open Sans', 'Montserrat', sans-serif;
+            color: #334;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: bold;
+            color: #f8f8ff;
+            background-color: #ec3;
+        }
+        .grTile {
+            font-family: 'Open Sans', 'Montserrat', sans-serif;
+            color: #334;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: bold;
+            color: #f8f8ff;
+            background-color: #4b4;
         }
         .keyboard {
             display: grid;
@@ -51,7 +101,7 @@
             margin-bottom: 8px;
         }
         .key {
-            font-family: sans-serif;
+            font-family: 'Open Sans', 'Montserrat', sans-serif;
             color: #334;
             width: 71px;
             height: 52.5px;
@@ -65,6 +115,7 @@
             outline: none;
             font-size: 21.5px;
             font-weight: bold;
+            transition: background-color 0.2s ease;
         }
         .key:hover {
             background-color: #ccd;
@@ -86,6 +137,7 @@
             outline: none;
             font-size: 25px;
             font-weight: bold;
+            transition: background-color 0.2s ease;
         }
         .bs-key:hover {
             background-color: #67e;
@@ -94,7 +146,7 @@
             background-color: #56d;
         }
         .et-key {
-            font-family: sans-serif;
+            font-family: 'Montserrat', 'Open Sans', sans-serif;
             width: 110.5px;
             height: 52.5px;
             display: flex;
@@ -108,6 +160,7 @@
             outline: none;
             font-size: 21.5px;
             font-weight: bold;
+            transition: background-color 0.2s ease;
         }
         .et-key:hover {
             background-color: #67e;
@@ -116,7 +169,7 @@
             background-color: #56d;
         }
         .gy-key {
-            font-family: sans-serif;
+            font-family: 'Open Sans', 'Montserrat', sans-serif;
             width: 71px;
             height: 52.5px;
             display: flex;
@@ -130,6 +183,7 @@
             color: #f8f8ff;
             font-size: 21.5px;
             font-weight: bold;
+            transition: background-color 0.2s ease;
         }
         .gy-key:hover {
             background-color: #99b;
@@ -138,7 +192,7 @@
             background-color: #88a;
         }
         .ye-key {
-            font-family: sans-serif;
+            font-family: 'Open Sans', 'Montserrat', sans-serif;
             width: 71px;
             height: 52.5px;
             display: flex;
@@ -152,6 +206,7 @@
             color: #f8f8ff;
             font-size: 21.5px;
             font-weight: bold;
+            transition: background-color 0.2s ease;
         }
         .ye-key:hover {
             background-color: #db2;
@@ -160,7 +215,7 @@
             background-color: #ca1;
         }
         .gr-key {
-            font-family: sans-serif;
+            font-family: 'Open Sans', 'Montserrat', sans-serif;
             width: 71px;
             height: 52.5px;
             display: flex;
@@ -174,6 +229,7 @@
             color: #f8f8ff;
             font-size: 21.5px;
             font-weight: bold;
+            transition: background-color 0.2s ease;
         }
         .gr-key:hover {
             background-color: #3a3;
@@ -182,13 +238,18 @@
             background-color: #292;
         }
         .win-lost {
-            margin-top: 20px;
+            display: flex;
+            visibility: hidden;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            top: 20px;
             justify-content: center;
-            font-family: 'Arial', sans-serif;
-            display: none;
+            font-family: 'Montserrat', 'Open Sans', sans-serif;
             font-size: 26px;
             font-weight: bold;
-            ;
+            opacity: 0;
+            transition: opacity 0.2s ease;
         }
         #settingsBtn {
             position: absolute;
@@ -207,6 +268,7 @@
             border: none;
             cursor: pointer;
             font-size: 20px;
+            transition: background-color 0.2s ease;
         }
         #settingsBtn:hover {
             color: #78f;
@@ -233,6 +295,7 @@
             border: none;
             cursor: pointer;
             font-size: 20px;
+            transition: background-color 0.2s ease;
         }
         #reDo:hover {
             color: #78f;
@@ -259,8 +322,9 @@
             border: none;
             cursor: pointer;
             font-size: 20px;
-            font-family: sans-serif;
+            font-family: 'Montserrat', 'Open Sans', sans-serif;
             font-weight: bold;
+            transition: background-color 0.2s ease;
         }
         #giveUp:hover {
             color: #78f;
@@ -271,7 +335,7 @@
             background-color: #cce;
         }
         .overlay {
-            display: none;
+            visibility: hidden;
             position: fixed;
             left: 0;
             top: 0;
@@ -279,6 +343,8 @@
             height: 100%;
             background: rgba(0, 0, 0, 0.5);
             z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.2s ease;
         }
         .popup-content {
             position: absolute;
@@ -286,23 +352,25 @@
             top: 50%;
             text-align: center;
             transform: translate(-50%, -50%);
-            background-color: white;
+            background-color: #f8f8ff;
             padding: 20px;
             border-radius: 5px;
             z-index: 1001;
-            width: 300px;
-            //height: 300px;
+            width: 420px;
+            flex-wrap: wrap;
             overflow-y: auto;
             font-size: 20px;
-            font-family: sans-serif;
+            color: #334;
+            font-family: 'Montserrat', 'Open Sans', sans-serif;
         }
         .close-btn {
             position: absolute;
             top: 2px;
             right: 10px;
             cursor: pointer;
-            font-size: 24px;
+            font-size: 32px;
             color: #aaa;
+            transition: color 0.2s ease;
         }
         .close-btn:hover {
             color: #999;
@@ -313,13 +381,151 @@
         #answerWord {
             text-transform: uppercase;
             vertical-align: top;
-            border-radius: 5px;
-            background: #f1f3f9;
-            padding: 10px;
-            border: 1px dashed #75819e;
             color: #334;
             font-size: 25px;
             font-weight: bold;
+            padding: 10px;
+            display: flex;
+            gap: 4px;
+            justify-content: center;
+            align-items: center;
+        }
+        #RedoPopup {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            top: 20px;
+            outline: none;
+            border-radius: 6px;
+            margin: 0 auto;
+            width: 80px;
+            height: 40px;
+            background-color: #78f;
+            color: #f8f8ff;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            transition: background-color 0.2s ease;
+        }
+        #RedoPopup:hover {
+            background-color: #67e;
+        }
+        #RedoPopup:active {
+            background-color: #56d;
+        }
+        .code-box {
+            user-select: text;
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            border: 1px solid #d3d6da;
+            border-radius: 1px;
+            background-color: #f3f3ff;
+            width: 100%;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            padding: 10px;
+            align-items: center;
+            overflow-x: auto;
+            white-space: pre-wrap;
+        }
+        .option {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            top: 20px;
+            outline: none;
+            border-radius: 6px;
+            width: 32px;
+            height: 32px;
+            background-color: #e5e5f5;
+            color: #556;
+            border: none;
+            cursor: pointer;
+            font-size: 15px;
+            font-family: 'Montserrat', 'Open Sans', sans-serif;
+            font-weight: bold;
+            transition: background-color 0.2s ease;
+        }
+        .option:hover {
+            color: #78f;
+            background-color: #ddf;
+        }
+        .option:active {
+            color: #67e;
+            background-color: #cce;
+        }
+        .selected {
+            background-color: #78f;
+            color: #f8f8ff;
+        }
+        .selected:hover {
+            color: #f8f8ff;
+            background-color: #67e;
+        }
+        .selected:active {
+            color: #f8f8ff;
+            background-color: #56d;
+        }
+        #options-container {
+            display: flex;
+            gap: 4px;
+            justify-content: center;
+            align-items: center;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 28px;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #e5e5f5;
+            -webkit-transition: 0.2s;
+            transition: 0.2s;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 4px;
+            bottom: 4px;
+            background-color: #f8f8ff;
+            -webkit-transition: 0.2s;
+            transition: 0.2s;
+        }
+        input:checked + .slider {
+            background-color: #78f;
+        }
+        input:hover + .slider {
+            background-color: #ddf;
+        }
+        input:hover:checked + .slider {
+            background-color: #67e;
+        }
+        input:checked + .slider:before {
+            -webkit-transform: translateX(22px);
+            -ms-transform: translateX(22px);
+            transform: translateX(22px);
+        }
+        .slider.round {
+            border-radius: 28px;
+        }
+        .slider.round:before {
+            border-radius: 50%;
         }
     </style>
 </head>
@@ -327,14 +533,31 @@
     <div id="overlay" class="overlay">
         <div class="popup-content">
             <span class="close-btn" id="closePopup">&times;</span>
-            <div style="margin-bottom: 20px; margin-top: 20px; font-weight: bold;">Answer:</div>
+            <div style="margin-bottom: 10px; margin-top: 30px; font-weight: bold;">Answer</div>
             <div id="answerWord"></div>
-            <div style="margin-bottom: 20px; margin-top: 20px; font-weight: bold;">Meaning:</div>
-            <div style="display:flex;justify-content: center;margin-bottom: 20px; ">
-                <div>[</div>
-                <div id="answerPart"></div>
-                <div>.]</div>
-                <div id="answerMean"></div>
+            <hr style="display: block;height: 2px;margin: 15px 15px; border: 0;background: #ddf;">
+            <div style="margin-bottom: 20px; margin-top: 10px; font-weight: bold;">Meaning</div>
+            <div style="display:flex; justify-content: center; margin-bottom: 20px; margin-left: 12px; margin-right: 12px; ">
+                <div class="code-box" id="answerMean"></div>
+            </div>
+            <div class="fa fa-redo" id="RedoPopup" style="margin-bottom: 10px; "></div>
+        </div>
+    </div>
+    <div id="settinglay" class="overlay">
+        <div class="popup-content">
+            <span class="close-btn" id="closeSetting">&times;</span>
+            <div style="margin-bottom: 20px; margin-top: 30px; font-weight: bold;">Number of Letters</div>
+            <div id="options-container"></div>
+            <hr style="display: block;height: 2px;margin: 25px 15px; border: 0;background: #ddf;">
+            <div style="display:flex; align-items: center;margin-bottom: 10px; ">
+                <div>
+                    <div style="margin-left: 10px;text-align: left;font-weight: bold;">Familiar Words Mode</div>
+                    <div style="width:330px; margin-left: 10px;font-size: 15px;color:#aab;text-align: left;">Answer will be selected from top 10000 words</div>
+                </div>
+                <label class="switch" style="margin-left: auto; margin-right: 10px;">
+                    <input type="checkbox" id="easy">
+                    <span class="slider round"></span>
+                </label>
             </div>
         </div>
     </div>
@@ -343,14 +566,18 @@
         <div style="font-size: 30px; color: #aac; margin-top: 2px;">LOST</div>
         <div style="font-size: 30px; margin-top: 2px;">&nbsp;!&nbsp;</div>💔
     </div>
+    <div id="cant" class="win-lost">
+    </div>
     <div id="win" class="win-lost">🏆
         <div style="font-size: 30px; margin-top: 2px;">&nbsp;You&nbsp;</div>
         <div style="font-size: 30px; color: #4b4; margin-top: 2px;">WON</div>
         <div style="font-size: 30px; margin-top: 2px;">&nbsp;!&nbsp;</div>🏆
     </div>
-    <div id="giveUp">Answer</div>
-    <div id="settingsBtn" class="fa fa-cog"></div>
-    <div id="reDo" class="fa fa-redo"></div>
+    <div id="buttons" style="display:none;">
+        <div id="giveUp">Answer</div>
+        <div id="settingsBtn" class="fa fa-cog"></div>
+        <div id="reDo" class="fa fa-redo"></div>
+    </div>
     <div class="game-container">
 
         <div id="board" class="board">
@@ -358,115 +585,237 @@
         <div id="keyboard" class="keyboard">
         </div>
     </div>
+    <script src="javascript/extend_wordlist.js"></script>
+    <script src="javascript/wordlist.js"></script>
+    <script src="javascript/mini_wordlist.js"></script>
+    <script src="javascript/word_meanings.js"></script>
     <script>
+        function generateOptions() {
+            var container = document.getElementById('options-container');
+            container.innerHTML = '';
+            for (var i = 4; i <= 11; i++) {
+                var div = document.createElement('div');
+                div.className = 'option';
+                div.textContent = i;
+                div.dataset.value = i;
+                div.addEventListener('click', function() {
+                    selectOption(this);
+                });
+                if (i === length) {
+                    div.classList.add('selected');
+                }
+                container.appendChild(div);
+            }
+        }
+        let use_mini = false;
+        let length = 5;
+        function saveToCookie(length, use_mini) {
+            localStorage.setItem('length', length);
+            localStorage.setItem('use_mini', use_mini);
+        }
+        function loadFromCookie() {
+            length = localStorage.getItem('length') == null ? null : parseInt(localStorage.getItem('length'));
+            use_mini = localStorage.getItem('use_mini') == null ? null : localStorage.getItem('use_mini') === 'true';
+        }
+        loadFromCookie();
+        if(length == null)
+        {
+            length = 5;
+            saveToCookie(5, use_mini);
+        }
+        if(use_mini == null)
+        {
+            use_mini = false;
+            saveToCookie(length, false);
+        }
+        function stringToUniqueNumber(str) {
+            let num = 0;
+            for (let i = 0; i < str.length; i++) {
+                num = num * 256 + str.charCodeAt(i);
+            }
+            return num;
+        }
+        const BASE62_CHARACTERS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+        const BASE62_RADIX = BASE62_CHARACTERS.length;
+        function base62Encode(num) {
+            let result = '';
+            while (num > 0) {
+                result = BASE62_CHARACTERS[num % BASE62_RADIX] + result;
+                num = Math.floor(num / BASE62_RADIX);
+            }
+            return result;
+        }
+        function base62Decode(str) {
+            let result = 0;
+            for (let i = 0; i < str.length; i++) {
+                result = result * BASE62_RADIX + BASE62_CHARACTERS.indexOf(str[i]);
+            }
+            return result;
+        }
+        function uniqueNumberToString(num) {
+            let str = '';
+            while (num > 0) {
+                str = String.fromCharCode(num % 256) + str;
+                num = Math.floor(num / 256);
+            }
+            return str;
+        }
+        function encode62(str) {
+            return  base62Encode(stringToUniqueNumber(str));
+        }
+        function decode62(str) {
+            return  uniqueNumberToString(base62Decode(str));
+        }
+        var queryString = window.location.search.substring(1);
+        let targetWord = 'TRACE';
+        let costom = false;
+        let length2 = 4;
+        if (queryString != '')
+        {
+            targetWord = decode62(queryString);
+            length2 = targetWord.length;
+            costom = true;
+        }
+        function selectOption(selectedDiv) {
+            var options = document.querySelectorAll('.option');
+            options.forEach(function(option) {
+                option.classList.remove('selected');
+            });
+            selectedDiv.classList.add('selected');
+            length = parseInt(selectedDiv.dataset.value);
+            saveToCookie(length,use_mini);
+            costom = false;
+            isWin = false;
+            let target = [];
+            if(use_mini) target = mini_words[length];
+            else target = words[length];
+            const randomIndex = Math.floor(Math.random() * target.length);
+            targetWord = target[randomIndex][0].toUpperCase();
+            let contain = document.getElementById('answerWord');
+            contain.innerHTML = '';
+            Tile = [];
+            for (var i = 0; i < targetWord.length; i++) {
+                var div = document.createElement('div');
+                div.textContent = targetWord[i];
+                div.className = 'Tile';
+                Tile.push(div);
+                contain.appendChild(div);
+            }
+            document.getElementById('answerMean').textContent = target[randomIndex][1];
+            currentRow = 0;
+            currentTile = 0;
+            guess = '';
+            messages = [];
+            document.getElementById('buttons').style.display = 'flex';
+            document.getElementById('win').style.visibility = 'hidden';
+            document.getElementById('win').style.opacity = '0';
+            document.getElementById('lost').style.visibility = 'hidden';
+            document.getElementById('lost').style.opacity = '0';
+            document.getElementById('cant').style.visibility = 'hidden';
+            document.getElementById('cant').style.opacity = '0';
+            createBoard();
+            createKeyboard();
+        }
+        document.getElementById('easy').checked=use_mini;
+        var switches = document.querySelectorAll('.switch input[type="checkbox"]');
+        switches.forEach(function(switchElement) {
+            switchElement.addEventListener('change', function(event) {
+                var switchId = event.target.id;
+                var switchState = event.target.checked;
+                if (switchId === 'easy') {
+                    use_mini = switchState;
+                    saveToCookie(length,use_mini);
+                }
+                costom = false;
+                isWin = false;
+                let target = [];
+                if(use_mini) target = mini_words[length];
+                else target = words[length];
+                const randomIndex = Math.floor(Math.random() * target.length);
+                targetWord = target[randomIndex][0].toUpperCase();
+                let contain = document.getElementById('answerWord');
+                contain.innerHTML = '';
+                Tile = [];
+                for (var i = 0; i < targetWord.length; i++) {
+                    var div = document.createElement('div');
+                    div.textContent = targetWord[i];
+                    div.className = 'Tile';
+                    Tile.push(div);
+                    contain.appendChild(div);
+                }
+                document.getElementById('answerMean').textContent = target[randomIndex][1];
+                currentRow = 0;
+                currentTile = 0;
+                guess = '';
+                messages = [];
+                document.getElementById('buttons').style.display = 'flex';
+                document.getElementById('win').style.visibility = 'hidden';
+                document.getElementById('win').style.opacity = '0';
+                document.getElementById('lost').style.visibility = 'hidden';
+                document.getElementById('lost').style.opacity = '0';
+                document.getElementById('cant').style.visibility = 'hidden';
+                document.getElementById('cant').style.opacity = '0';
+                createBoard();
+                createKeyboard();
+            });
+        });
         const keyboardLayout = [
             'QWERTYUIOP',
             'ASDFGHJKL',
-            '⌫ZXCVBNM↵'
+            '\u232bZXCVBNM\u21b5'
         ];
         let isWin = false;
-        let targetWord = 'TRACE';
-        let length = 5;
         let currentRow = 0;
         let currentTile = 0;
         let guess = '';
-        let words = [];
-        /*fetch('\wordlist.json')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('\'wordlist.json\' non exist.');
-            }
-            return response.json();
-        })
-        .then(data => {
-            words = data;
-            document.getElementById('reDo').addEventListener('click', () => init());
+        let messages = [];
+        let Tile = [];
+        document.getElementById('RedoPopup').addEventListener('click', () => {
+            costom = false;
             init();
-        })
-        .catch(error => {
-            console.error('Error to read \'wordlist.json\':', error);
-        });*/
-        let jsonString= `
-{
- "4": [
-   {
-     "word": "tree",
-     "partofspeech": "n",
-     "chinesemeaning": "树"
-   }
- ],
- "5": [
-   {
-     "word": "river",
-     "partofspeech": "n",
-     "chinesemeaning": "河流"
-   },
-   {
-     "word": "trace",
-     "partofspeech": "v",
-     "chinesemeaning": "追踪"
-   }
- ],
- "6": [],
- "7": [],
- "8": [
-   {
-     "word": "mountain",
-     "partofspeech": "n",
-     "chinesemeaning": "山脉"
-   },
-   {
-     "word": "elephant",
-     "partofspeech": "n",
-     "chinesemeaning": "大象"
-   }
- ],
- "9": [
-   {
-     "word": "beautiful",
-     "partofspeech": "adj",
-     "chinesemeaning": "美丽的"
-   }
- ],
- "10": [
-   {
-     "word": "understand",
-     "partofspeech": "v",
-     "chinesemeaning": "理解"
-   }
- ],
- "11": [
-   {
-     "word": "confidence",
-     "partofspeech": "n",
-     "chinesemeaning": "信心"
-   }
- ]
-}
-`;
-        words = JSON.parse(jsonString);
-        document.getElementById('reDo').addEventListener('click', () => init());
+        });
+        document.getElementById('reDo').addEventListener('click', () => {costom = false;init()});
         init();
         document.getElementById('giveUp').addEventListener('click', () => {
             currentRow = 6;
             if (isWin) {
                 const result = document.getElementById('win');
-                result.style.display = 'flex';
+                result.style.visibility = 'visible';
+                result.style.opacity = '1';
             }
             else if (currentRow == 6) {
                 const result = document.getElementById('lost');
-                result.style.display = 'flex';
+                result.style.visibility = 'visible';
+                result.style.opacity = '1';
             }
-            document.getElementById('overlay').style.display = 'block';
+            document.getElementById('overlay').style.visibility = 'visible';
+            document.getElementById('overlay').style.opacity = '1';
+            if (document.getElementById('answerMean').clientHeight > 41) {
+                document.getElementById('answerMean').style.textAlign = "left";
+            }
+            else {
+                document.getElementById('answerMean').style.textAlign = "center";
+            }
         });
-        document.getElementById('closePopup').addEventListener('click', () => document.getElementById('overlay').style.display = 'none');
+        document.getElementById('settingsBtn').addEventListener('click', () => {
+            document.getElementById('settinglay').style.visibility = 'visible';
+            document.getElementById('settinglay').style.opacity = '1';
+        });
+        document.getElementById('closePopup').addEventListener('click', () => {
+            document.getElementById('overlay').style.opacity = '0';
+            setTimeout(()=> {document.getElementById('overlay').style.visibility = 'hidden';},200)
+        });
+        document.getElementById('closeSetting').addEventListener('click', () => {
+            document.getElementById('settinglay').style.opacity = '0';
+            setTimeout(()=> {document.getElementById('settinglay').style.visibility = 'hidden';},200)
+        });
         function createBoard() {
             const board = document.getElementById('board');
             board.innerHTML = '';
             for (let i = 0; i < 6; i++) {
                 const row = document.createElement('div');
                 row.className = 'board-row';
-                for (let j = 0; j < length; j++) {
+                for (let j = 0; j < (costom?length2:length); j++) {
                     const tile = document.createElement('div');
                     tile.className = 'tile';
                     row.appendChild(tile);
@@ -474,10 +823,48 @@
                 board.appendChild(row);
             }
         }
+        function countLetter(str, o, letter) {
+            let count = 0;
+            for (let i = 0; i < str.length; i++) {
+                if (str[i] === letter && o[i] === '1') {
+                count++;
+                }
+            }
+            return count;
+        }
         function handleSubmit() {
-            let result = '0'.repeat(length);
+            if (currentTile < (costom?length2:length)) {
+                const mess = document.getElementById('cant');
+                messages.forEach(element => clearTimeout(element));
+                messages=[];
+                mess.style.color='#f77';
+                mess.textContent='To short.';
+                mess.style.visibility = 'visible';
+                mess.style.opacity = '1';
+                messages.push(setTimeout(()=> {
+                    mess.style.opacity = '0';
+                    messages.push(setTimeout(()=> {mess.style.visibility = 'hidden';},200));
+                },1000));
+                return;
+            }
+            let result = '0'.repeat(costom?length2:length);
+            if (!(ext_words[costom?length2:length].includes(guess)))
+            {
+                const mess = document.getElementById('cant');
+                messages.forEach(element => clearTimeout(element));
+                messages=[];
+                mess.style.color='#f77';
+                mess.textContent='Word not found.';
+                mess.style.visibility = 'visible';
+                mess.style.opacity = '1';
+                messages.push(setTimeout(()=> {
+                    mess.style.opacity = '0';
+                    messages.push(setTimeout(()=> {mess.style.visibility = 'hidden';},200))
+                },1000));
+                return;
+            }
             if (currentRow < 6) {
-                for (let i = 0; i < length; i++) {
+                for (let i = 0; i < (costom?length2:length); i++) {
                     if (guess[i] === targetWord[i]) result = result.substring(0, i) + '2' + result.substring(i + 1);
                     else for (let j = 0; j < guess.length; j++) {
                         if (guess[j] === targetWord[i] && result[j] === '0') {
@@ -486,12 +873,12 @@
                         }
                     }
                 }
-                if (result === '2'.repeat(length)) {
+                if (result === '2'.repeat(costom?length2:length)) {
                     isWin = true;
                 }
                 const rows = document.querySelectorAll('.board-row');
                 const tiles = rows[currentRow].querySelectorAll('.tile');
-                for (let i = 0; i < length; i++) {
+                for (let i = 0; i < (costom?length2:length); i++) {
                     const key = document.getElementById(guess[i]);
                     if (result[i] === '0') {
                         tiles[i].style.color = '#f8f8ff';
@@ -502,6 +889,14 @@
                         }
                     }
                     else if (result[i] === '1') {
+                        let num = countLetter(guess, result, guess[i]);
+                        for (let j = 0; j < (costom?length2:length); j++) {
+                            if (Tile[j].textContent === guess[i] && Tile[j].className != 'grTile') {
+                                Tile[j].className = 'yeTile';
+                                num--;
+                            }
+                            if (num==0) break;
+                        }
                         tiles[i].style.color = '#f8f8ff';
                         tiles[i].style.backgroundColor = '#ec3';
                         tiles[i].style.border = '2px solid #ec3';
@@ -510,6 +905,7 @@
                         }
                     }
                     else {
+                        Tile[i].className = 'grTile';
                         tiles[i].style.color = '#f8f8ff';
                         tiles[i].style.backgroundColor = '#4b4';
                         tiles[i].style.border = '2px solid #4b4';
@@ -521,33 +917,53 @@
                 currentRow++;
                 if (isWin) {
                     const result = document.getElementById('win');
-                    result.style.display = 'flex';
+                    result.style.visibility = 'visible';
+                    result.style.opacity = '1';
+                    setTimeout(()=> {
+                        document.getElementById('overlay').style.visibility = 'visible';
+                        document.getElementById('overlay').style.opacity = '1';
+                        if (document.getElementById('answerMean').clientHeight > 41) {
+                            document.getElementById('answerMean').style.textAlign = "left";
+                        }
+                        else {
+                            document.getElementById('answerMean').style.textAlign = "center";
+                        }
+                    },200);
                 }
                 else if (currentRow == 6) {
                     const result = document.getElementById('lost');
-                    result.style.display = 'flex';
+                    result.style.visibility = 'visible';
+                    result.style.opacity = '1';
+                    setTimeout(()=> {
+                        document.getElementById('overlay').style.visibility = 'visible';
+                        document.getElementById('overlay').style.opacity = '1';
+                        if (document.getElementById('answerMean').clientHeight > 41) {
+                            document.getElementById('answerMean').style.textAlign = "left";
+                        }
+                        else {
+                            document.getElementById('answerMean').style.textAlign = "center";
+                        }
+                    },200);
                 }
             }
         }
         function updateTile(key) {
             if (isWin) return;
-            if (currentRow == 6) return;
+            if (currentRow == 6 && key != '\u21b5') return;
             const rows = document.querySelectorAll('.board-row');
             const tiles = rows[currentRow].querySelectorAll('.tile');
-            if (key === '⌫') {
+            if (key === '\u232b') {
                 if (currentTile > 0) {
                     guess = guess.slice(0, -1);
                     currentTile--;
                     tiles[currentTile].textContent = '';
                 }
             }
-            else if (key === '↵') {
-                if (currentTile == length) {
-                    handleSubmit();
-                }
+            else if (key === '\u21b5') {
+                handleSubmit();
             }
             else {
-                if (currentTile < length) {
+                if (currentTile < (costom?length2:length)) {
                     guess += key;
                     tiles[currentTile].textContent = key;
                     currentTile++;
@@ -563,15 +979,15 @@
                 for (let j = 0; j < keyboardLayout[i].length; j++) {
                     const char = keyboardLayout[i][j];
                     const key = document.createElement('div');
-                    key.className = char === '⌫' ? 'bs-key' : char === '↵' ? 'et-key' : 'key';
-                    if (char === '⌫') {
+                    key.className = char === '\u232b' ? 'bs-key' : char === '\u21b5' ? 'et-key' : 'key';
+                    if (char === '\u232b') {
                         const icon = document.createElement('i');
                         icon.className = 'fa fa-backspace';
                         key.appendChild(icon);
                     }
                     else
                     {
-                        key.textContent = char === '↵' ? 'Enter' : char;
+                        key.textContent = char === '\u21b5' ? 'Enter' : char;
                     }
                     key.id = char;
                     key.addEventListener('click', () => updateTile(char));
@@ -581,26 +997,52 @@
             }
         }
         function init() {
+            generateOptions();
+            document.getElementById('overlay').opacity = '0';
+            document.getElementById('overlay').style.visibility = 'hidden';
+            document.getElementById('settinglay').opacity = '0';
+            document.getElementById('settinglay').style.visibility = 'hidden';
             isWin = false;
-            let target=words[length];
-            const randomIndex = Math.floor(Math.random() * target.length);
-            targetWord = target[randomIndex].word.toUpperCase();
-            document.getElementById('answerWord').textContent = targetWord;
-            document.getElementById('answerPart').textContent = target[randomIndex].partofspeech;
-            document.getElementById('answerMean').textContent = target[randomIndex].chinesemeaning;
-            console.log(words);
+            let target = [];
+            if(!costom)
+            {
+                if(use_mini) target = mini_words[length];
+                else target = words[length];
+                const randomIndex = Math.floor(Math.random() * target.length);
+                targetWord = target[randomIndex][0].toUpperCase();
+                document.getElementById('answerMean').textContent = target[randomIndex][1];
+            }
+            else
+            {
+                document.getElementById('answerMean').textContent = meaning[targetWord];
+            }
+            let contain = document.getElementById('answerWord');
+            contain.innerHTML = '';
+            Tile = [];
+            for (var i = 0; i < targetWord.length; i++) {
+                var div = document.createElement('div');
+                div.textContent = targetWord[i];
+                div.className = 'Tile';
+                Tile.push(div);
+                contain.appendChild(div);
+            }
             currentRow = 0;
             currentTile = 0;
             guess = '';
-            document.getElementById('win').style.display = 'none';
-            document.getElementById('lost').style.display = 'none';
+            messages = [];
+            document.getElementById('buttons').style.display = 'flex';
+            document.getElementById('win').style.visibility = 'hidden';
+            document.getElementById('win').style.opacity = '0';
+            document.getElementById('lost').style.visibility = 'hidden';
+            document.getElementById('lost').style.opacity = '0';
+            document.getElementById('cant').style.visibility = 'hidden';
+            document.getElementById('cant').style.opacity = '0';
             createBoard();
             createKeyboard();
         }
         document.addEventListener('keydown', (e) => {
             if ((e.key.match(/^[a-z]$/i) || e.key === 'Backspace' || e.key === 'Enter') && !event.ctrlKey && !event.altKey && !event.shiftKey) {
-                const key = e.key === 'Backspace' ? '⌫' : e.key === 'Enter' ? '↵' : e.key.toUpperCase();
-                console.log(key);
+                const key = e.key === 'Backspace' ? '\u232b' : e.key === 'Enter' ? '\u21b5' : e.key.toUpperCase();
                 updateTile(key);
             }
         });
