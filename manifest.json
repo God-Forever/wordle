@@ -1,0 +1,16 @@
+{
+    "short_name": "Wordle",
+    "name": "Wordle",
+    "icons": [
+        {
+            "src": "images/icon.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ],
+    "start_url": ".",
+    "background_color": "#f8f8ff",
+    "display": "standalone",
+    "scope": "/",
+    "theme_color": "#f8f8ff"
+}
