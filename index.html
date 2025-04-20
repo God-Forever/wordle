@@ -546,15 +546,100 @@
         }
         #Share:hover {
             background-color: #67e;
+            transition: background-color 0.2s ease;
         }
         #Share:active {
             background-color: #56d;
+            transition: background-color 0.2s ease;
+        }
+        #Copy {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            top: 20px;
+            outline: none;
+            border-radius: 6px;
+            margin-left: auto;
+            margin-right: auto;
+            width: 130px;
+            height: 40px;
+            background-color: #78f;
+            color: #f8f8ff;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 17.2px;
+            transition: background-color 0.2s ease;
+        }
+        #Copy:hover {
+            background-color: #67e;
+            transition: background-color 0.2s ease;
+        }
+        #Copy:active {
+            background-color: #56d;
+            transition: background-color 0.2s ease;
         }
         #cpd {
             font-size: 15px;
             color:#4b4;
             opacity: 0;
             transition: opacity 0.2s ease;
+        }
+        #cpd2 {
+            font-size: 15px;
+            color:#4b4;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+        #input {
+            width: 100%;
+            height: 42px;
+            padding: 0 13px;
+            border: 0;
+            border-radius: 7px;
+            font-size: 18px;
+            color: #334;
+            background-color: #e5e5f5;
+            margin: 10px 0 5px;
+            border-radius: 5px;
+            max-width: 300px;
+            transition: background-color 0.2s ease;
+        }
+        #input::-webkit-input-placeholder {
+            color: #99b;
+        }
+        #input:-moz-placeholder {
+            color: #99b;
+            opacity: 1; 
+        }
+        #input::-moz-placeholder {
+            color: #99b;
+            opacity: 1; 
+        }
+        #input:-ms-input-placeholder {
+            color: #99b;
+        }
+        #input::placeholder {
+            color: #99b;
+        }
+        #input:hover {
+            outline: 0;
+            background-color: rgb(231, 231, 255);
+            transition: background-color 0.2s ease;
+        }
+        #input:focus {
+            outline: 0;
+            background-color: rgb(231, 231, 255);
+            transition: background-color 0.2s ease;
+        }
+        #see {
+            color: #556;
+        }
+        #see:hover {
+            color: #78f;
+        }
+        #see:active {
+            color: #67e;
         }
     </style>
 </head>
@@ -585,7 +670,7 @@
             <div style="margin-bottom: 20px; margin-top: 30px; font-weight: bold;">Number of Letters</div>
             <div id="options-container"></div>
             <hr style="display: block;height: 2px;margin: 25px 15px; border: 0;background: #ddf;">
-            <div style="display:flex; align-items: center;margin-bottom: 10px; ">
+            <div style="display:flex; align-items: center;">
                 <div>
                     <div style="margin-left: 10px;text-align: left;font-weight: bold;">Familiar Words Mode</div>
                     <div style="width:330px; margin-left: 10px;font-size: 15px;color:#aab;text-align: left;">Answer will be selected from top 10000 words</div>
@@ -594,6 +679,15 @@
                     <input type="checkbox" id="easy">
                     <span class="slider round"></span>
                 </label>
+            </div>
+            <hr style="display: block;height: 2px;margin: 25px 15px; border: 0;background: #ddf;">
+            <div style="margin-bottom: 10px;">
+                <div style="font-weight: bold;">Custom Word</div>
+                <div style="width:400px; margin-left: 10px;font-size: 15px;color:#aab;text-align: left;">Create a custom game with a word consisting of 4-11 letters</div>
+                <input id="input" type="password" style="margin-top: 20px;position:relative;" placeholder="Your word..."></input>
+                <div id="see" class="fa fa-eye-slash" style="position: absolute; left:360px; margin-top: 32px;"></div>
+                <div id="Copy" style="margin-top: 20px; ">Copy Link</div>
+                <div id="cpd2" style="position:absolute;bottom:42px; left:62px;">Link Copied!</div>
             </div>
         </div>
     </div>
@@ -621,11 +715,11 @@
         <div id="keyboard" class="keyboard">
         </div>
     </div>
-    <script src="javascript/extend_wordlist.js"></script>
-    <script src="javascript/wordlist.js"></script>
-    <script src="javascript/mini_wordlist.js"></script>
-    <script src="javascript/word_meanings.js"></script>
     <script>
+        let meaning = null;
+        let words = null;
+        let mini_words = null;
+        let ext_words = null;
         let cpms=[];
         function copyToClipboard(text) {
             if (navigator.clipboard && window.isSecureContext) {
@@ -634,7 +728,11 @@
                 document.getElementById('cpd').style.color='#4B4';
                 document.getElementById('cpd').textContent='Link Copied!';
                 document.getElementById('cpd').style.opacity=1;
-                cpms.push(setTimeout(()=>{document.getElementById('cpd').style.opacity = '0';},1000));
+                document.getElementById('cpd2').style.color='#4B4';
+                document.getElementById('cpd2').style.left='62px';
+                document.getElementById('cpd2').textContent='Link Copied!';
+                document.getElementById('cpd2').style.opacity=1;
+                cpms.push(setTimeout(()=>{document.getElementById('cpd').style.opacity = '0';document.getElementById('cpd2').style.opacity = '0';},1000));
                 return navigator.clipboard.writeText(text);
             } else {
                 const textArea = document.createElement("textarea");
@@ -650,7 +748,11 @@
                         document.getElementById('cpd').style.color='#f77';
                         document.getElementById('cpd').textContent='Copy failed!';
                         document.getElementById('cpd').style.opacity=1;
-                        cpms.push(setTimeout(()=> {document.getElementById('cpd').style.opacity = '0';},1000));
+                        document.getElementById('cpd2').style.color='#f77';
+                        document.getElementById('cpd2').style.left='62px';
+                        document.getElementById('cpd2').textContent='Copy failed!';
+                        document.getElementById('cpd2').style.opacity=1;
+                        cpms.push(setTimeout(()=> {document.getElementById('cpd').style.opacity = '0';document.getElementById('cpd2').style.opacity = '0';},1000));
                     }
                     else
                     {
@@ -659,15 +761,23 @@
                         document.getElementById('cpd').style.color='#4B4';
                         document.getElementById('cpd').textContent='Copy failed!';
                         document.getElementById('cpd').style.opacity=1;
-                        cpms.push(setTimeout(()=> {document.getElementById('cpd').style.opacity = '0';},1000));
+                        document.getElementById('cpd2').style.color='#4B4';
+                        document.getElementById('cpd2').style.left='62px';
+                        document.getElementById('cpd2').textContent='Link Copied!';
+                        document.getElementById('cpd2').style.opacity=1;
+                        cpms.push(setTimeout(()=> {document.getElementById('cpd').style.opacity = '0';document.getElementById('cpd2').style.opacity = '0';},1000));
                     }
                 } catch (err) {
                     cpms.forEach(element => clearTimeout(element));
                     cpms=[];
                     document.getElementById('cpd').style.color='#f77';
-                    document.getElementById('cpd').textContent='Failed to copy!';
+                    document.getElementById('cpd').textContent='Copy failed!';
                     document.getElementById('cpd').style.opacity=1;
-                    cpms.push(setTimeout(()=> {document.getElementById('cpd').style.opacity = '0';},1000));
+                    document.getElementById('cpd2').style.color='#f77';
+                    document.getElementById('cpd2').style.left='62px';
+                    document.getElementById('cpd2').textContent='Copy failed!';
+                    document.getElementById('cpd2').style.opacity=1;
+                    cpms.push(setTimeout(()=> {document.getElementById('cpd').style.opacity = '0';document.getElementById('cpd2').style.opacity = '0';},1000));
                 }
                 document.body.removeChild(textArea);
             }
@@ -692,31 +802,40 @@
                 container.appendChild(div);
             }
         }
+        let costom = false;
         let use_mini = false;
         let length = 5;
+        let see = true;
         function saveToCookie(length, use_mini) {
             localStorage.setItem('length', length);
             localStorage.setItem('use_mini', use_mini);
+            localStorage.setItem('see', see);
         }
         function loadFromCookie() {
             length = localStorage.getItem('length') == null ? null : parseInt(localStorage.getItem('length'));
             use_mini = localStorage.getItem('use_mini') == null ? null : localStorage.getItem('use_mini') === 'true';
+            see = localStorage.getItem('see') == null ? null : localStorage.getItem('see') === 'true';
         }
         loadFromCookie();
         if(length == null)
         {
             length = 5;
-            saveToCookie(5, use_mini);
+            saveToCookie(5, use_mini, see);
         }
         if(use_mini == null)
         {
             use_mini = false;
-            saveToCookie(length, false);
+            saveToCookie(length, false, see);
+        }
+        if(see == null)
+        {
+            see = true;
+            saveToCookie(length, use_mini, true);
         }
         function stringToUniqueNumber(str) {
-            let num = 0;
+            let num = 0n;
             for (let i = 0; i < str.length; i++) {
-                num = num * 256 + str.charCodeAt(i);
+                num = num * 256n + BigInt(str.charCodeAt(i));
             }
             return num;
         }
@@ -725,23 +844,23 @@
         function base62Encode(num) {
             let result = '';
             while (num > 0) {
-                result = BASE62_CHARACTERS[num % BASE62_RADIX] + result;
-                num = Math.floor(num / BASE62_RADIX);
+                result = BASE62_CHARACTERS[num % BigInt(BASE62_RADIX)] + result;
+                num = num / BigInt(BASE62_RADIX);
             }
             return result;
         }
         function base62Decode(str) {
-            let result = 0;
+            let result = 0n;
             for (let i = 0; i < str.length; i++) {
-                result = result * BASE62_RADIX + BASE62_CHARACTERS.indexOf(str[i]);
+                result = result * BigInt(BASE62_RADIX) + BigInt(BASE62_CHARACTERS.indexOf(str[i]));
             }
             return result;
         }
         function uniqueNumberToString(num) {
             let str = '';
             while (num > 0) {
-                str = String.fromCharCode(num % 256) + str;
-                num = Math.floor(num / 256);
+                str = String.fromCharCode(Number(num % 256n)) + str;
+                num = num / 256n;
             }
             return str;
         }
@@ -751,15 +870,15 @@
         function decode62(str) {
             return  uniqueNumberToString(base62Decode(str));
         }
-        var queryString = window.location.search.substring(1);
-        let targetWord = 'TRACE';
-        let costom = false;
-        let length2 = 4;
-        if (queryString != '')
-        {
-            targetWord = decode62(queryString);
-            length2 = targetWord.length;
-            costom = true;
+        if(see) {
+            document.getElementById('see').className="fa fa-eye-slash";
+            document.getElementById('see').style.left="360px";
+            document.getElementById('input').type = 'text';
+        }
+        else {
+            document.getElementById('see').className="fa fa-eye";
+            document.getElementById('see').style.left="361px";
+            document.getElementById('input').type = 'password';
         }
         function selectOption(selectedDiv) {
             var options = document.querySelectorAll('.option');
@@ -768,8 +887,9 @@
             });
             selectedDiv.classList.add('selected');
             length = parseInt(selectedDiv.dataset.value);
-            saveToCookie(length,use_mini);
+            saveToCookie(length,use_mini,see);
             costom = false;
+            history.pushState(null, '', window.location.pathname);
             isWin = false;
             let target = [];
             if(use_mini) target = mini_words[length];
@@ -809,9 +929,10 @@
                 var switchState = event.target.checked;
                 if (switchId === 'easy') {
                     use_mini = switchState;
-                    saveToCookie(length,use_mini);
+                    saveToCookie(length,use_mini,see);
                 }
                 costom = false;
+                history.pushState(null, '', window.location.pathname);
                 isWin = false;
                 let target = [];
                 if(use_mini) target = mini_words[length];
@@ -857,13 +978,51 @@
         let Tile = [];
         document.getElementById('RedoPopup').addEventListener('click', () => {
             costom = false;
+            history.pushState(null, '', window.location.pathname);
             init();
+        });
+        document.getElementById('see').addEventListener('click', () => {
+            if(document.getElementById('see').className==="fa fa-eye") {
+                document.getElementById('see').className="fa fa-eye-slash";
+                document.getElementById('see').style.left="360px";
+                document.getElementById('input').type = 'text';
+                see=true;
+                saveToCookie(length,use_mini,see);
+            }
+            else if(document.getElementById('see').className==="fa fa-eye-slash") {
+                document.getElementById('see').className="fa fa-eye";
+                document.getElementById('see').style.left="361px";
+                document.getElementById('input').type = 'password';
+                see=false;
+                saveToCookie(length,use_mini,see);
+            }
         });
         document.getElementById('Share').addEventListener('click', () => {
             copylink();
         });
-        document.getElementById('reDo').addEventListener('click', () => {costom = false;init()});
-        init();
+        document.getElementById('Copy').addEventListener('click', () => {
+            var word = document.getElementById('input').value.toUpperCase();
+            var exist = false;
+            for (let i = 4; i < 12; i++) {
+                if(ext_words[i].includes(word)) {
+                    exist=true;
+                    break;
+                }
+            }
+            if(exist) copyToClipboard(window.location.origin + window.location.pathname + "?"+encode62(word));
+            else {
+                cpms.forEach(element => clearTimeout(element));
+                cpms=[];
+                document.getElementById('cpd2').style.color='#f77';
+                document.getElementById('cpd2').style.left='60px';
+                document.getElementById('cpd2').textContent='Invalid word!';
+                document.getElementById('cpd2').style.opacity=1;
+                cpms.push(setTimeout(()=> {document.getElementById('cpd2').style.opacity = '0';},1000));
+                    
+            }
+        });
+        document.getElementById('reDo').addEventListener('click', () => {costom = false;history.pushState(null, '', window.location.pathname);init()});
+        init(true);
         document.getElementById('giveUp').addEventListener('click', () => {
             currentRow = 6;
             if (isWin) {
@@ -1084,35 +1243,37 @@
                 board.appendChild(row);
             }
         }
-        function init() {
+        function init(part=false) {
             generateOptions();
             document.getElementById('overlay').opacity = '0';
             document.getElementById('overlay').style.visibility = 'hidden';
             document.getElementById('settinglay').opacity = '0';
             document.getElementById('settinglay').style.visibility = 'hidden';
             isWin = false;
-            let target = [];
-            if(!costom)
-            {
-                if(use_mini) target = mini_words[length];
-                else target = words[length];
-                const randomIndex = Math.floor(Math.random() * target.length);
-                targetWord = target[randomIndex][0].toUpperCase();
-                document.getElementById('answerMean').textContent = target[randomIndex][1];
-            }
-            else
-            {
-                document.getElementById('answerMean').textContent = meaning[targetWord]===undefined?"暂无译义":meaning[targetWord];
-            }
-            let contain = document.getElementById('answerWord');
-            contain.innerHTML = '';
-            Tile = [];
-            for (var i = 0; i < targetWord.length; i++) {
-                var div = document.createElement('div');
-                div.textContent = targetWord[i];
-                div.className = 'Tile';
-                Tile.push(div);
-                contain.appendChild(div);
+            if (!part) {
+                let target = [];
+                if(!costom)
+                {
+                    if(use_mini) target = mini_words[length];
+                    else target = words[length];
+                    const randomIndex = Math.floor(Math.random() * target.length);
+                    targetWord = target[randomIndex][0].toUpperCase();
+                    document.getElementById('answerMean').textContent = target[randomIndex][1];
+                }
+                else
+                {
+                    document.getElementById('answerMean').textContent = meaning[targetWord]===undefined?"暂无译义":meaning[targetWord];
+                }
+                let contain = document.getElementById('answerWord');
+                contain.innerHTML = '';
+                Tile = [];
+                for (var i = 0; i < targetWord.length; i++) {
+                    var div = document.createElement('div');
+                    div.textContent = targetWord[i];
+                    div.className = 'Tile';
+                    Tile.push(div);
+                    contain.appendChild(div);
+                }
             }
             currentRow = 0;
             currentTile = 0;
@@ -1128,10 +1289,135 @@
             createBoard();
             createKeyboard();
         }
+    </script>
+    <script src="javascript/wordlist.js"></script>
+    <script src="javascript/mini_wordlist.js"></script>
+    <script src="javascript/word_meanings.js"></script>
+    <script src="javascript/extend_wordlist.js"></script>
+    <script>
+        var queryString = window.location.search.substring(1);
+        let targetWord = 'TRACE';
+        let length2 = 4;
+        if (queryString != '')
+        {
+            targetWord = decode62(queryString);
+            length2 = targetWord.length;
+            costom = true;
+        }
+        init();
         document.addEventListener('keydown', (e) => {
-            if ((e.key.match(/^[a-z]$/i) || e.key === 'Backspace' || e.key === 'Enter') && !event.ctrlKey && !event.altKey && !event.shiftKey) {
+            if ((e.key.match(/^[a-z]$/i) || e.key === 'Backspace' || e.key === 'Enter') && !e.ctrlKey && !e.altKey && document.getElementById('settinglay').style.visibility != "visible") {
+                event.preventDefault();
                 const key = e.key === 'Backspace' ? '\u232b' : e.key === 'Enter' ? '\u21b5' : e.key.toUpperCase();
                 updateTile(key);
+            }
+            else if ((e.key.match(/^[4-9]$/i)||e.key ==='a'||e.key ==='b') && !e.ctrlKey && !e.altKey && !e.shiftKey && document.activeElement!=document.getElementById('input')) {
+                event.preventDefault();
+                var number=e.key ==='a'?10:e.key ==='b'?11:parseInt(e.key);
+                length=number;
+                if(document.getElementById('settinglay').style.visibility === "visible")
+                {
+                    var options = document.querySelectorAll('.option');
+                    options.forEach(function(option) {
+                        option.classList.remove('selected');
+                        if (parseInt(option.dataset.value)===number)option.classList.add('selected');
+                    });
+                    saveToCookie(length,use_mini,see);
+                    costom = false;
+                    history.pushState(null, '', window.location.pathname);
+                    isWin = false;
+                    let target = [];
+                    if(use_mini) target = mini_words[length];
+                    else target = words[length];
+                    const randomIndex = Math.floor(Math.random() * target.length);
+                    targetWord = target[randomIndex][0].toUpperCase();
+                    let contain = document.getElementById('answerWord');
+                    contain.innerHTML = '';
+                    Tile = [];
+                    for (var i = 0; i < targetWord.length; i++) {
+                        var div = document.createElement('div');
+                        div.textContent = targetWord[i];
+                        div.className = 'Tile';
+                        Tile.push(div);
+                        contain.appendChild(div);
+                    }
+                    document.getElementById('answerMean').textContent = target[randomIndex][1];
+                    currentRow = 0;
+                    currentTile = 0;
+                    guess = '';
+                    messages = [];
+                    document.getElementById('buttons').style.display = 'flex';
+                    document.getElementById('win').style.visibility = 'hidden';
+                    document.getElementById('win').style.opacity = '0';
+                    document.getElementById('lost').style.visibility = 'hidden';
+                    document.getElementById('lost').style.opacity = '0';
+                    document.getElementById('cant').style.visibility = 'hidden';
+                    document.getElementById('cant').style.opacity = '0';
+                    createBoard();
+                    createKeyboard();
+                }
+            }
+            else if(event.ctrlKey) {
+                if(e.key === 'r')
+                {
+                    event.preventDefault();
+                    costom = false;
+                    history.pushState(null, '', window.location.pathname);
+                    init(); 
+                }
+                if(e.key === 's')
+                {
+                    event.preventDefault();
+                    if(document.getElementById('overlay').style.visibility === "visible")
+                    {
+                        copylink();
+                    }
+                    else
+                    {
+                        document.getElementById('settinglay').style.visibility = 'visible';
+                        document.getElementById('settinglay').style.opacity = '1';
+                    }
+                }
+                if(e.key === 'a')
+                {
+                    event.preventDefault();
+                    if(document.getElementById('settinglay').style.visibility != "visible")
+                    {
+                        currentRow = 6;
+                        if (isWin) {
+                            const result = document.getElementById('win');
+                            result.style.visibility = 'visible';
+                            result.style.opacity = '1';
+                        }
+                        else if (currentRow == 6) {
+                            const result = document.getElementById('lost');
+                            result.style.visibility = 'visible';
+                            result.style.opacity = '1';
+                        }
+                        document.getElementById('overlay').style.visibility = 'visible';
+                        document.getElementById('overlay').style.opacity = '1';
+                        if (document.getElementById('answerMean').clientHeight > 41) {
+                            document.getElementById('answerMean').style.textAlign = "left";
+                        }
+                        else {
+                            document.getElementById('answerMean').style.textAlign = "center";
+                        }
+                    }
+                }
+            }
+            else if(e.keyCode === 27 && !e.ctrlKey && !e.altKey && !e.shiftKey)
+            {
+                event.preventDefault();
+                if(document.getElementById('overlay').style.visibility === "visible")
+                {
+                    document.getElementById('overlay').style.opacity = '0';
+                    setTimeout(()=> {document.getElementById('overlay').style.visibility = 'hidden';},200)
+                }
+                else if(document.getElementById('settinglay').style.visibility === "visible")
+                {
+                    document.getElementById('settinglay').style.opacity = '0';
+                    setTimeout(()=> {document.getElementById('settinglay').style.visibility = 'hidden';},200)
+                }
             }
         });
     </script>
