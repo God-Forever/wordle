@@ -722,11 +722,18 @@
             </div>
         </div>
     </div>
+    
     <script>
         let meaning = null;
         let words = null;
         let mini_words = null;
         let ext_words = null;
+    </script>
+    <script src="javascript/wordlist.js"></script>
+    <script src="javascript/mini_wordlist.js"></script>
+    <script src="javascript/word_meanings.js"></script>
+    <script src="javascript/extend_wordlist.js"></script>
+    <script>
         let cpms=[];
         function copyToClipboard(text) {
             if (navigator.clipboard && window.isSecureContext) {
@@ -1304,12 +1311,6 @@
             createBoard();
             createKeyboard();
         }
-    </script>
-    <script src="javascript/wordlist.js"></script>
-    <script src="javascript/mini_wordlist.js"></script>
-    <script src="javascript/word_meanings.js"></script>
-    <script src="javascript/extend_wordlist.js"></script>
-    <script>
         var queryString = window.location.search.substring(1);
         let targetWord = 'TRACE';
         let length2 = 4;
