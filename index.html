@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="css/font.css">
     <style>
         body {
+            overflow: hidden;
             font-family: 'Montserrat', 'Open Sans', sans-serif;
             background-color: #f8f8ff;
             user-select: none;
@@ -336,7 +337,10 @@
         }
         .overlay {
             visibility: hidden;
-            position: fixed;
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             left: 0;
             top: 0;
             width: 100%;
@@ -347,11 +351,12 @@
             transition: opacity 0.2s ease;
         }
         .popup-content {
-            position: absolute;
+            /*position: absolute;
             left: 50%;
             top: 50%;
-            text-align: center;
             transform: translate(-50%, -50%);
+            margin: auto;*/
+            text-align: center;
             background-color: #f8f8ff;
             padding: 20px;
             border-radius: 5px;
@@ -645,7 +650,7 @@
 </head>
 <body>
     <div id="overlay" class="overlay">
-        <div class="popup-content">
+        <div class="popup-content" id="ans">
             <span class="close-btn" id="closePopup">&times;</span>
             <div style="margin-bottom: 10px; margin-top: 30px; font-weight: bold;">Answer</div>
             <div id="answerWord"></div>
@@ -661,11 +666,10 @@
                     <div class="fa fa-redo" id="RedoPopup" style="margin-bottom: 10px; "></div>
                 </div>
             </div>
-
         </div>
     </div>
     <div id="settinglay" class="overlay">
-        <div class="popup-content">
+        <div class="popup-content" id="set">
             <span class="close-btn" id="closeSetting">&times;</span>
             <div style="margin-bottom: 20px; margin-top: 30px; font-weight: bold;">Number of Letters</div>
             <div id="options-container"></div>
@@ -691,28 +695,29 @@
             </div>
         </div>
     </div>
-    <div id="lost" class="win-lost">💔
-        <div style="font-size: 30px; margin-top: 2px;">&nbsp;You&nbsp;</div>
-        <div style="font-size: 30px; color: #aac; margin-top: 2px;">LOST</div>
-        <div style="font-size: 30px; margin-top: 2px;">&nbsp;!&nbsp;</div>💔
-    </div>
-    <div id="cant" class="win-lost">
-    </div>
-    <div id="win" class="win-lost">🏆
-        <div style="font-size: 30px; margin-top: 2px;">&nbsp;You&nbsp;</div>
-        <div style="font-size: 30px; color: #4b4; margin-top: 2px;">WON</div>
-        <div style="font-size: 30px; margin-top: 2px;">&nbsp;!&nbsp;</div>🏆
-    </div>
-    <div id="buttons" style="display:none;">
-        <div id="giveUp">Answer</div>
-        <div id="settingsBtn" class="fa fa-cog"></div>
-        <div id="reDo" class="fa fa-redo"></div>
-    </div>
-    <div class="game-container">
-
-        <div id="board" class="board">
+    <div id="top">
+        <div id="lost" class="win-lost">💔
+            <div style="font-size: 30px; margin-top: 2px;">&nbsp;You&nbsp;</div>
+            <div style="font-size: 30px; color: #aac; margin-top: 2px;">LOST</div>
+            <div style="font-size: 30px; margin-top: 2px;">&nbsp;!&nbsp;</div>💔
         </div>
-        <div id="keyboard" class="keyboard">
+        <div id="cant" class="win-lost">
+        </div>
+        <div id="win" class="win-lost">🏆
+            <div style="font-size: 30px; margin-top: 2px;">&nbsp;You&nbsp;</div>
+            <div style="font-size: 30px; color: #4b4; margin-top: 2px;">WON</div>
+            <div style="font-size: 30px; margin-top: 2px;">&nbsp;!&nbsp;</div>🏆
+        </div>
+        <div id="buttons" style="display:none;">
+            <div id="giveUp">Answer</div>
+            <div id="settingsBtn" class="fa fa-cog"></div>
+            <div id="reDo" class="fa fa-redo"></div>
+        </div>
+        <div class="game-container">
+            <div id="board" class="board">
+            </div>
+            <div id="keyboard" class="keyboard">
+            </div>
         </div>
     </div>
     <script>
@@ -1023,6 +1028,14 @@
         });
         document.getElementById('reDo').addEventListener('click', () => {costom = false;history.pushState(null, '', window.location.pathname);init()});
         init(true);
+        window.addEventListener('resize', () => {
+            document.getElementById('set').style.transform = `scale(${Math.min(window.innerHeight/747,window.innerWidth/848)})`;
+            document.getElementById('ans').style.transform = `scale(${Math.min(window.innerHeight/747,window.innerWidth/848)})`;
+            document.getElementById('top').style.transform = `scale(${Math.min(window.innerHeight/747,window.innerWidth/848)}) translate(0,${(1-1/Math.min(window.innerHeight/747,window.innerWidth/848))*8}px)`;
+        });
+        document.getElementById('set').style.transform = `scale(${Math.min(window.innerHeight/747,window.innerWidth/848)})`;
+        document.getElementById('ans').style.transform = `scale(${Math.min(window.innerHeight/747,window.innerWidth/848)})`;
+        document.getElementById('top').style.transform = `scale(${Math.min(window.innerHeight/747,window.innerWidth/848)}) translate(0,${(1-1/Math.min(window.innerHeight/747,window.innerWidth/848))*8}px)`;
         document.getElementById('giveUp').addEventListener('click', () => {
             currentRow = 6;
             if (isWin) {
