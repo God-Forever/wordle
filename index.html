@@ -9,6 +9,20 @@
     <link rel="stylesheet" href="css/font.css">
     <link rel="manifest" href="manifest.json">
     <style>
+        ::-webkit-scrollbar {
+            width: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #e5e5f5;
+            border-radius: 2px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #bbd;
+            border-radius: 2px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #aac;
+        }
         body {
             overflow: hidden;
             font-family: 'Montserrat', 'Open Sans', sans-serif;
@@ -672,29 +686,42 @@
         </div>
     </div>
     <div id="settinglay" class="overlay">
-        <div class="popup-content" id="set">
+        <div class="popup-content" id="set" style="overflow: hidden;">
             <span class="close-btn" id="closeSetting">&times;</span>
-            <div style="margin-bottom: 20px; margin-top: 30px; font-weight: bold;">Number of Letters</div>
-            <div id="options-container"></div>
-            <hr style="display: block;height: 2px;margin: 25px 15px; border: 0;background: #ddf;">
-            <div style="display:flex; align-items: center;">
-                <div>
-                    <div style="margin-left: 10px;text-align: left;font-weight: bold;">Familiar Words Mode</div>
-                    <div style="width:330px; margin-left: 10px;font-size: 15px;color:#aab;text-align: left;">Answer will be selected from top 10000 words</div>
+            <div style="margin-top: 30px;overflow-y: auto;/*max-height: 500px;*/margin-bottom: 10px;position: relative; ">
+                <div style="margin-bottom: 20px;font-weight: bold;">Number of Letters</div>
+                <div id="options-container"></div>
+                <hr style="display: block;height: 2px;margin: 25px 15px; border: 0;background: #ddf;">
+                <div style="display:flex; align-items: center;">
+                    <div>
+                        <div style="margin-left: 10px;text-align: left;font-weight: bold;">Familiar Mode</div>
+                        <div style="width:330px; margin-left: 10px;font-size: 15px;color:#aab;text-align: left;">Answer will be selected from top 10000 words</div>
+                    </div>
+                    <label class="switch" style="margin-left: auto; margin-right: 10px;">
+                        <input type="checkbox" id="easy">
+                        <span class="slider round"></span>
+                    </label>
                 </div>
-                <label class="switch" style="margin-left: auto; margin-right: 10px;">
-                    <input type="checkbox" id="easy">
-                    <span class="slider round"></span>
-                </label>
-            </div>
-            <hr style="display: block;height: 2px;margin: 25px 15px; border: 0;background: #ddf;">
-            <div style="margin-bottom: 10px;">
-                <div style="font-weight: bold;">Custom Word</div>
-                <div style="width:400px; margin-left: 10px;font-size: 15px;color:#aab;text-align: left;">Create a custom game with a word consisting of 4-11 letters</div>
-                <input id="input" type="password" style="margin-top: 20px;position:relative;" placeholder="Your word..."></input>
-                <div id="see" class="fa fa-eye-slash" style="position: absolute; left:360px; margin-top: 32px;"></div>
-                <div id="Copy" style="margin-top: 20px; ">Copy Link</div>
-                <div id="cpd2" style="position:absolute;bottom:42px; left:62px;">Link Copied!</div>
+                <hr style="display: block;height: 2px;margin: 25px 15px; border: 0;background: #ddf;">
+                <div style="display:flex; align-items: center;">
+                    <div>
+                        <div style="margin-left: 10px;text-align: left;font-weight: bold;">Circle Mode</div>
+                        <div style="width:330px; margin-left: 10px;font-size: 15px;color:#aab;text-align: left;">Answer of the previous round will serve as the first guess for the next round</div>
+                    </div>
+                    <label class="switch" style="margin-left: auto; margin-right: 10px;">
+                        <input type="checkbox" id="circle">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <hr style="display: block;height: 2px;margin: 25px 15px; border: 0;background: #ddf;">
+                <div>
+                    <div style="font-weight: bold;">Custom Word</div>
+                    <div style="width:400px; margin-left: 10px;font-size: 15px;color:#aab;text-align: left;">Create a custom game with a word consisting of 4-11 letters</div>
+                    <input id="input" type="password" style="margin-top: 20px;position:relative;" placeholder="Your word..."></input>
+                    <div id="see" class="fa fa-eye-slash" style="position: absolute; left:335px; margin-top: 32px;"></div>
+                    <div id="Copy" style="margin-top: 20px; ">Copy Link</div>
+                    <div id="cpd2" style="position:absolute;bottom:42px; left:62px;">Link Copied!</div>
+                </div>
             </div>
         </div>
     </div>
@@ -725,7 +752,6 @@
             </div>
         </div>
     </div>
-    
     <script>
         let meaning = null;
         let words = null;
@@ -776,7 +802,7 @@
                         cpms.forEach(element => clearTimeout(element));
                         cpms=[];
                         document.getElementById('cpd').style.color='#4B4';
-                        document.getElementById('cpd').textContent='Copy failed!';
+                        document.getElementById('cpd').textContent='Link Copied!';
                         document.getElementById('cpd').style.opacity=1;
                         document.getElementById('cpd2').style.color='#4B4';
                         document.getElementById('cpd2').style.left='62px';
@@ -820,35 +846,26 @@
             }
         }
         let costom = false;
+        let circl = false;
         let use_mini = false;
         let length = 5;
         let see = true;
-        function saveToCookie(length, use_mini) {
+        let lastWord = {};
+        function saveToCookie(length, use_mini,see,circl,lastWord) {
             localStorage.setItem('length', length);
             localStorage.setItem('use_mini', use_mini);
             localStorage.setItem('see', see);
+            localStorage.setItem('circl', circl);
+            localStorage.setItem('lastWord',JSON.stringify(lastWord));
         }
         function loadFromCookie() {
-            length = localStorage.getItem('length') == null ? null : parseInt(localStorage.getItem('length'));
-            use_mini = localStorage.getItem('use_mini') == null ? null : localStorage.getItem('use_mini') === 'true';
-            see = localStorage.getItem('see') == null ? null : localStorage.getItem('see') === 'true';
+            length = localStorage.getItem('length') == null ? 5 : parseInt(localStorage.getItem('length'));
+            use_mini = localStorage.getItem('use_mini') == null ? false : localStorage.getItem('use_mini') === 'true';
+            see = localStorage.getItem('see') == null ? true : localStorage.getItem('see') === 'true';
+            circl = localStorage.getItem('circl') == null ? false : localStorage.getItem('circl') === 'true';
+            lastWord = localStorage.getItem('lastWord') == null ? {} : JSON.parse(localStorage.getItem('lastWord'));
         }
         loadFromCookie();
-        if(length == null)
-        {
-            length = 5;
-            saveToCookie(5, use_mini, see);
-        }
-        if(use_mini == null)
-        {
-            use_mini = false;
-            saveToCookie(length, false, see);
-        }
-        if(see == null)
-        {
-            see = true;
-            saveToCookie(length, use_mini, true);
-        }
         function stringToUniqueNumber(str) {
             let num = 0n;
             for (let i = 0; i < str.length; i++) {
@@ -889,12 +906,12 @@
         }
         if(see) {
             document.getElementById('see').className="fa fa-eye-slash";
-            document.getElementById('see').style.left="360px";
+            document.getElementById('see').style.left="335px";
             document.getElementById('input').type = 'text';
         }
         else {
             document.getElementById('see').className="fa fa-eye";
-            document.getElementById('see').style.left="361px";
+            document.getElementById('see').style.left="336px";
             document.getElementById('input').type = 'password';
         }
         function selectOption(selectedDiv) {
@@ -904,7 +921,7 @@
             });
             selectedDiv.classList.add('selected');
             length = parseInt(selectedDiv.dataset.value);
-            saveToCookie(length,use_mini,see);
+            saveToCookie(length,use_mini,see,circl,lastWord);
             costom = false;
             history.pushState(null, '', window.location.pathname);
             isWin = false;
@@ -939,6 +956,7 @@
             createKeyboard();
         }
         document.getElementById('easy').checked=use_mini;
+        document.getElementById('circle').checked=circl;
         var switches = document.querySelectorAll('.switch input[type="checkbox"]');
         switches.forEach(function(switchElement) {
             switchElement.addEventListener('change', function(event) {
@@ -946,7 +964,11 @@
                 var switchState = event.target.checked;
                 if (switchId === 'easy') {
                     use_mini = switchState;
-                    saveToCookie(length,use_mini,see);
+                    saveToCookie(length,use_mini,see,circl,lastWord);
+                }
+                if (switchId === 'circle') {
+                    circl = switchState;
+                    saveToCookie(length,use_mini,see,circl,lastWord);
                 }
                 costom = false;
                 history.pushState(null, '', window.location.pathname);
@@ -1001,17 +1023,17 @@
         document.getElementById('see').addEventListener('click', () => {
             if(document.getElementById('see').className==="fa fa-eye") {
                 document.getElementById('see').className="fa fa-eye-slash";
-                document.getElementById('see').style.left="360px";
+                document.getElementById('see').style.left="335px";
                 document.getElementById('input').type = 'text';
                 see=true;
-                saveToCookie(length,use_mini,see);
+                saveToCookie(length,use_mini,see,circl,lastWord);
             }
             else if(document.getElementById('see').className==="fa fa-eye-slash") {
                 document.getElementById('see').className="fa fa-eye";
-                document.getElementById('see').style.left="361px";
+                document.getElementById('see').style.left="336px";
                 document.getElementById('input').type = 'password';
                 see=false;
-                saveToCookie(length,use_mini,see);
+                saveToCookie(length,use_mini,see,circl,lastWord);
             }
         });
         document.getElementById('Share').addEventListener('click', () => {
@@ -1039,7 +1061,6 @@
             }
         });
         document.getElementById('reDo').addEventListener('click', () => {costom = false;history.pushState(null, '', window.location.pathname);init()});
-        init(true);
         window.addEventListener('resize', () => {
             document.getElementById('set').style.transform = `scale(${Math.min(window.innerHeight/747,window.innerWidth/848)})`;
             document.getElementById('ans').style.transform = `scale(${Math.min(window.innerHeight/747,window.innerWidth/848)})`;
@@ -1267,7 +1288,18 @@
                 }
                 board.appendChild(row);
             }
+            if(circl&&lastWord[length]!=undefined) {
+                for (var i = 0; i < length; i++) {
+                    updateTile(lastWord[length][i].toUpperCase());
+                }
+                updateTile('\u21b5');
+            }
+            lastWord[length]=targetWord;
+            saveToCookie(length,use_mini,see,circl,lastWord);
         }
+        var queryString = window.location.search.substring(1);
+        let targetWord = 'TRACE';
+        let length2 = 4;
         function init(part=false) {
             generateOptions();
             document.getElementById('overlay').opacity = '0';
@@ -1314,14 +1346,19 @@
             createBoard();
             createKeyboard();
         }
-        var queryString = window.location.search.substring(1);
-        let targetWord = 'TRACE';
-        let length2 = 4;
         if (queryString != '')
         {
-            targetWord = decode62(queryString);
-            length2 = targetWord.length;
-            costom = true;
+            let word_=decode62(queryString);
+            if (/^[A-Z]+$/.test(word_))
+            {
+                targetWord = word_;
+                length2 = targetWord.length;
+                costom = true;
+            }
+            else
+            {
+                history.pushState(null, '', window.location.pathname);
+            }
         }
         init();
         document.addEventListener('keydown', (e) => {
@@ -1341,7 +1378,7 @@
                         option.classList.remove('selected');
                         if (parseInt(option.dataset.value)===number)option.classList.add('selected');
                     });
-                    saveToCookie(length,use_mini,see);
+                    saveToCookie(length,use_mini,see,circl,lastWord);
                     costom = false;
                     history.pushState(null, '', window.location.pathname);
                     isWin = false;
@@ -1393,17 +1430,17 @@
                     else if(document.getElementById('input') === document.activeElement) {
                         if(document.getElementById('see').className==="fa fa-eye") {
                             document.getElementById('see').className="fa fa-eye-slash";
-                            document.getElementById('see').style.left="360px";
+                            document.getElementById('see').style.left="335px";
                             document.getElementById('input').type = 'text';
                             see=true;
-                            saveToCookie(length,use_mini,see);
+                            saveToCookie(length,use_mini,see,circl,lastWord);
                         }
                         else if(document.getElementById('see').className==="fa fa-eye-slash") {
                             document.getElementById('see').className="fa fa-eye";
-                            document.getElementById('see').style.left="361px";
+                            document.getElementById('see').style.left="336px";
                             document.getElementById('input').type = 'password';
                             see=false;
-                            saveToCookie(length,use_mini,see);
+                            saveToCookie(length,use_mini,see,circl,lastWord);
                         }
                     }
                     else {
@@ -1440,16 +1477,58 @@
                 if(e.key === 'f')
                 {
                     event.preventDefault();
-                    if(document.getElementById('settinglay').style.visibility === "visible"/*&&document.getElementById('input') != document.activeElement*/)
+                    if(document.getElementById('settinglay').style.visibility === "visible"&&document.getElementById('input') != document.activeElement)
                     {
                         if(document.getElementById('easy').checked) {
                             document.getElementById('easy').checked=false;
-                            saveToCookie(length,use_mini,see);
+                            saveToCookie(length,use_mini,see,circl,lastWord);
                         }
                         else {
                             document.getElementById('easy').checked=true;
-                            saveToCookie(length,use_mini,see);
+                            saveToCookie(length,use_mini,see,circl,lastWord);
                         }
+                    }
+                }
+                if(e.key === 'c')
+                {
+                    event.preventDefault();
+                    if(document.getElementById('settinglay').style.visibility === "visible"&&document.getElementById('input') != document.activeElement)
+                    {
+                        if(document.getElementById('circle').checked) {
+                            document.getElementById('circle').checked=false;
+                            saveToCookie(length,use_mini,see,circl,lastWord);
+                        }
+                        else {
+                            document.getElementById('circle').checked=true;
+                            saveToCookie(length,use_mini,see,circl,lastWord);
+                        }
+                    }
+                }
+                if(e.key === 'v')
+                {
+                    if(document.getElementById('settinglay').style.visibility != "visible")
+                    {
+                        event.preventDefault();
+                        navigator.clipboard.readText()
+                        .then(text => {
+                            if(text.startsWith(window.location.origin + window.location.pathname+"?")&&/^[A-Z]+$/.test(decode62(text.slice(text.indexOf('?') + 1))))window.location.href = text;
+                            else {
+                                const mess = document.getElementById('cant');
+                                messages.forEach(element => clearTimeout(element));
+                                messages=[];
+                                mess.style.color='#f77';
+                                mess.textContent='Invalid url!';
+                                mess.style.visibility = 'visible';
+                                mess.style.opacity = '1';
+                                messages.push(setTimeout(()=> {
+                                    mess.style.opacity = '0';
+                                    messages.push(setTimeout(()=> {mess.style.visibility = 'hidden';},200));
+                                },1000));
+                            }
+                        })
+                        .catch(err => {
+                            console.error('Failed to read clipboard contents: ', err);
+                        });
                     }
                 }
             }
