@@ -13,15 +13,15 @@
             width: 5px;
         }
         ::-webkit-scrollbar-track {
-            background: #e5e5f5;
+            background: #f2f2ff;
             border-radius: 2px;
         }
         ::-webkit-scrollbar-thumb {
-            background: #bbd;
+            background: #e5e5f5;
             border-radius: 2px;
         }
         ::-webkit-scrollbar-thumb:hover {
-            background: #aac;
+            background: #d5d5e5;
         }
         body {
             overflow: hidden;
@@ -368,11 +368,6 @@
             transition: opacity 0.2s ease;
         }
         .popup-content {
-            /*position: absolute;
-            left: 50%;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            margin: auto;*/
             text-align: center;
             background-color: #f8f8ff;
             padding: 20px;
@@ -663,6 +658,20 @@
         #see:active {
             color: #67e;
         }
+        .keys {
+            position: relative;
+        }
+        .keys::after {
+
+            content: attr(data-after-content); 
+            position: absolute; 
+            right: 0; 
+            top: 0;
+            color: white; 
+            padding: 2px 6px; 
+            font-size: 12px;
+            border-radius: 50%; 
+        }
     </style>
 </head>
 <body>
@@ -688,13 +697,13 @@
     <div id="settinglay" class="overlay">
         <div class="popup-content" id="set" style="overflow: hidden;">
             <span class="close-btn" id="closeSetting">&times;</span>
-            <div style="margin-top: 30px;overflow-y: auto;/*max-height: 500px;*/margin-bottom: 10px;position: relative; ">
-                <div style="margin-bottom: 20px;font-weight: bold;">Number of Letters</div>
+            <div style="margin-top: 30px;overflow-y: auto;max-height: 500px; margin-bottom: 10px;position: relative; ">
+                <div style="margin-bottom: 20px;font-weight: bold;" id="nn">Number of Letters</div>
                 <div id="options-container"></div>
                 <hr style="display: block;height: 2px;margin: 25px 15px; border: 0;background: #ddf;">
                 <div style="display:flex; align-items: center;">
                     <div>
-                        <div style="margin-left: 10px;text-align: left;font-weight: bold;">Familiar Mode</div>
+                        <div style="margin-left: 10px;text-align: left;font-weight: bold;" id="nf">Familiar Mode</div>
                         <div style="width:330px; margin-left: 10px;font-size: 15px;color:#aab;text-align: left;">Answer will be selected from top 10000 words</div>
                     </div>
                     <label class="switch" style="margin-left: auto; margin-right: 10px;">
@@ -705,7 +714,7 @@
                 <hr style="display: block;height: 2px;margin: 25px 15px; border: 0;background: #ddf;">
                 <div style="display:flex; align-items: center;">
                     <div>
-                        <div style="margin-left: 10px;text-align: left;font-weight: bold;">Circle Mode</div>
+                        <div style="margin-left: 10px;text-align: left;font-weight: bold;" id="nc">Circle Mode</div>
                         <div style="width:330px; margin-left: 10px;font-size: 15px;color:#aab;text-align: left;">Answer of the previous round will serve as the first guess for the next round</div>
                     </div>
                     <label class="switch" style="margin-left: auto; margin-right: 10px;">
@@ -764,6 +773,9 @@
     <script src="javascript/extend_wordlist.js"></script>
     <script>
         let cpms=[];
+        function judge(){
+
+        }
         function copyToClipboard(text) {
             if (navigator.clipboard && window.isSecureContext) {
                 cpms.forEach(element => clearTimeout(element));
@@ -1116,10 +1128,26 @@
                 board.appendChild(row);
             }
         }
+        let keys = "QWERTYUIOPASDFGHJKZXCVBNM";
+        let hasright={};
+        let hasalright={};
+        for (let i = 0; i < keys.length; i++) {
+            hasright[keys[i]] = 0;
+            hasalright[keys[i]] = 0;
+        }
         function countLetter(str, o, letter) {
             let count = 0;
             for (let i = 0; i < str.length; i++) {
                 if (str[i] === letter && o[i] === '1') {
+                count++;
+                }
+            }
+            return count;
+        }
+        function countLetter2(str, o, letter) {
+            let count = 0;
+            for (let i = 0; i < str.length; i++) {
+                if (str[i] === letter && o[i] === '2') {
                 count++;
                 }
             }
@@ -1158,7 +1186,17 @@
             }
             if (currentRow < 6) {
                 for (let i = 0; i < (costom?length2:length); i++) {
-                    if (guess[i] === targetWord[i]) result = result.substring(0, i) + '2' + result.substring(i + 1);
+                    if (guess[i] === targetWord[i]) 
+                    {
+                        if(result[i]==='1') 
+                        for (let j = i+1; j < guess.length; j++) {
+                            if (guess[j] === targetWord[i] && result[j] === '0') {
+                                result = result.substring(0, j) + '1' + result.substring(j + 1);
+                                break;
+                            }
+                        }
+                        result = result.substring(0, i) + '2' + result.substring(i + 1);
+                    }
                     else for (let j = 0; j < guess.length; j++) {
                         if (guess[j] === targetWord[i] && result[j] === '0') {
                             result = result.substring(0, j) + '1' + result.substring(j + 1);
@@ -1178,31 +1216,46 @@
                         tiles[i].style.backgroundColor = '#aac';
                         tiles[i].style.border = '2px solid #aac';
                         if (key.className === 'key') {
-                            key.className = 'gy-key';
+                            key.className = 'keys gy-key';
                         }
                     }
-                    else if (result[i] === '1') {
-                        let num = countLetter(guess, result, guess[i]);
-                        for (let j = 0; j < (costom?length2:length); j++) {
-                            if (Tile[j].textContent === guess[i] && Tile[j].className != 'grTile') {
-                                Tile[j].className = 'yeTile';
-                                num--;
-                            }
-                            if (num==0) break;
-                        }
-                        tiles[i].style.color = '#f8f8ff';
-                        tiles[i].style.backgroundColor = '#ec3';
-                        tiles[i].style.border = '2px solid #ec3';
-                        if (key.className != 'gr-key') {
-                            key.className = 'ye-key';
-                        }
-                    }
-                    else {
+                    else if (result[i] === '2') {
+                        if(Tile[i].className != 'grTile') hasalright[guess[i]]+=1;
+                        if(Tile[i].className === 'Tile') hasright[guess[i]]+=1;
                         Tile[i].className = 'grTile';
                         tiles[i].style.color = '#f8f8ff';
                         tiles[i].style.backgroundColor = '#4b4';
                         tiles[i].style.border = '2px solid #4b4';
-                        key.className = 'gr-key';
+                        key.className = 'keys gr-key';
+                        if(hasright[guess[i]]>1) {
+                            key.setAttribute('data-after-content', hasright[guess[i]]);
+                        }
+                    }
+                    else {
+                        let num = countLetter(guess, result, guess[i]);
+                        let num2 = countLetter2(guess, result, guess[i]);
+                        if(num+num2>hasright[guess[i]]) {
+                            hasright[guess[i]]=num+num2;
+                        }
+                        num=hasright[guess[i]]-hasalright[guess[i]];
+                        for (let j = 0; j < (costom?length2:length); j++) {
+                            if (num > 0 && Tile[j].textContent === guess[i] && Tile[j].className != 'grTile') {
+                                Tile[j].className = 'yeTile';
+                                num--;
+                            }
+                            else {
+                                if(Tile[j].className==='yeTile')Tile[j].className = 'Tile';
+                            }
+                        }
+                        tiles[i].style.color = '#f8f8ff';
+                        tiles[i].style.backgroundColor = '#ec3';
+                        tiles[i].style.border = '2px solid #ec3';
+                        if (key.className != 'keys gr-key') {
+                            key.className = 'keys ye-key';
+                        }
+                        if(hasright[guess[i]]>1) {
+                            key.setAttribute('data-after-content', hasright[guess[i]]);
+                        }
                     }
                 }
                 guess = '';
@@ -1272,7 +1325,8 @@
                 for (let j = 0; j < keyboardLayout[i].length; j++) {
                     const char = keyboardLayout[i][j];
                     const key = document.createElement('div');
-                    key.className = char === '\u232b' ? 'bs-key' : char === '\u21b5' ? 'et-key' : 'key';
+                    key.className = char === '\u232b' ? 'keys bs-key' : char === '\u21b5' ? 'keys et-key' : 'keys key';
+                    key.setAttribute('data-after-content', '');
                     if (char === '\u232b') {
                         const icon = document.createElement('i');
                         icon.className = 'fa fa-backspace';
@@ -1288,14 +1342,14 @@
                 }
                 board.appendChild(row);
             }
-            if(circl&&lastWord[length]!=undefined) {
-                for (var i = 0; i < length; i++) {
-                    updateTile(lastWord[length][i].toUpperCase());
+            if(circl&&lastWord[costom?length2:length]!=undefined) {
+                for (var i = 0; i < (costom?length2:length); i++) {
+                    updateTile(lastWord[costom?length2:length][i].toUpperCase());
                 }
                 updateTile('\u21b5');
             }
-            lastWord[length]=targetWord;
-            saveToCookie(length,use_mini,see,circl,lastWord);
+            lastWord[costom?length2:length]=targetWord;
+            saveToCookie((costom?length2:length),use_mini,see,circl,lastWord);
         }
         var queryString = window.location.search.substring(1);
         let targetWord = 'TRACE';
@@ -1334,6 +1388,10 @@
             }
             currentRow = 0;
             currentTile = 0;
+            for (let i = 0; i < keys.length; i++) {
+                hasright[keys[i]] = 0;
+                hasalright[keys[i]] = 0;
+            }
             guess = '';
             messages = [];
             document.getElementById('buttons').style.display = 'flex';
@@ -1349,16 +1407,17 @@
         if (queryString != '')
         {
             let word_=decode62(queryString);
-            if (/^[A-Z]+$/.test(word_))
-            {
+            if (/^[A-Z]+$/.test(word_)) {
                 targetWord = word_;
                 length2 = targetWord.length;
                 costom = true;
             }
-            else
-            {
+            else {
                 history.pushState(null, '', window.location.pathname);
             }
+        }
+        else {
+            history.pushState(null, '', window.location.pathname);
         }
         init();
         document.addEventListener('keydown', (e) => {
@@ -1371,8 +1430,8 @@
                 event.preventDefault();
                 var number=e.key ==='a'?10:e.key ==='b'?11:parseInt(e.key);
                 length=number;
-                if(document.getElementById('settinglay').style.visibility === "visible")
-                {
+                if(document.getElementById('settinglay').style.visibility === "visible") {
+                    document.getElementById('nn').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
                     var options = document.querySelectorAll('.option');
                     options.forEach(function(option) {
                         option.classList.remove('selected');
@@ -1414,15 +1473,13 @@
                 }
             }
             else if(event.ctrlKey) {
-                if(e.key === 'r')
-                {
+                if(e.key === 'r') {
                     event.preventDefault();
                     costom = false;
                     history.pushState(null, '', window.location.pathname);
                     init(); 
                 }
-                if(e.key === 's')
-                {
+                if(e.key === 's') {
                     event.preventDefault();
                     if(document.getElementById('overlay').style.visibility === "visible") {
                         copylink();
@@ -1448,11 +1505,9 @@
                         document.getElementById('settinglay').style.opacity = '1';
                     }
                 }
-                if(e.key === 'a')
-                {
+                if(e.key === 'a') {
                     event.preventDefault();
-                    if(document.getElementById('settinglay').style.visibility != "visible")
-                    {
+                    if(document.getElementById('settinglay').style.visibility != "visible") {
                         currentRow = 6;
                         if (isWin) {
                             const result = document.getElementById('win');
@@ -1474,11 +1529,11 @@
                         }
                     }
                 }
-                if(e.key === 'f')
-                {
+                if(e.key === 'f') {
                     event.preventDefault();
                     if(document.getElementById('settinglay').style.visibility === "visible"&&document.getElementById('input') != document.activeElement)
                     {
+                        document.getElementById('nf').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
                         if(document.getElementById('easy').checked) {
                             document.getElementById('easy').checked=false;
                             saveToCookie(length,use_mini,see,circl,lastWord);
@@ -1494,6 +1549,7 @@
                     event.preventDefault();
                     if(document.getElementById('settinglay').style.visibility === "visible"&&document.getElementById('input') != document.activeElement)
                     {
+                        document.getElementById('nc').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
                         if(document.getElementById('circle').checked) {
                             document.getElementById('circle').checked=false;
                             saveToCookie(length,use_mini,see,circl,lastWord);
@@ -1511,8 +1567,36 @@
                         event.preventDefault();
                         navigator.clipboard.readText()
                         .then(text => {
-                            if(text.startsWith(window.location.origin + window.location.pathname+"?")&&/^[A-Z]+$/.test(decode62(text.slice(text.indexOf('?') + 1))))window.location.href = text;
+                            if(text.startsWith(window.location.origin + window.location.pathname+"?"))
+                            {
+                                queryString=text.substring(text.indexOf("?")+1);
+                                if (queryString != '')
+                                {
+                                    let word_=decode62(queryString);
+                                    if (/^[A-Z]+$/.test(word_))
+                                    {
+                                        targetWord = word_;
+                                        length2 = targetWord.length;
+                                        costom = true;
+                                        history.pushState(null, '', text);
+                                    }
+                                    else
+                                    {
+                                        costom = false;
+                                        history.pushState(null, '', window.location.pathname);
+                                    }
+                                }
+                                init();
+                            }
+                            else if(text.startsWith(window.location.origin + window.location.pathname)) {
+                                costom = false;
+                                history.pushState(null, '', window.location.pathname);
+                                init();
+                            }
                             else {
+                                costom = false;
+                                history.pushState(null, '', window.location.pathname);
+                                init();
                                 const mess = document.getElementById('cant');
                                 messages.forEach(element => clearTimeout(element));
                                 messages=[];
@@ -1554,7 +1638,10 @@
                     if(document.getElementById('input') === document.activeElement) {
                         document.getElementById('input').blur();
                     }
-                    else document.getElementById('input').focus();
+                    else {
+                        document.getElementById('input').focus();
+                        document.getElementById('Copy').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    }
                 }
             }
             else if(e.key === 'Enter' && !e.ctrlKey && !e.altKey && !e.shiftKey)
