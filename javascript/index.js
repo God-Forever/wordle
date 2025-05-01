@@ -409,15 +409,6 @@ function countLetter(str, o, letter) {
     }
     return count;
 }
-function countLetter2(str, o, letter) {
-    let count = 0;
-    for (let i = 0; i < str.length; i++) {
-        if (str[i] === letter && o[i] === '2') {
-        count++;
-        }
-    }
-    return count;
-}
 function handleSubmit() {
     if (currentTile < (costom?length2:length)) {
         const mess = document.getElementById('cant');
@@ -493,6 +484,7 @@ function handleSubmit() {
         const tiles = rows[currentRow].querySelectorAll('.tile');
         for (let i = 0; i < (costom?length2:length); i++) {
             const key = document.getElementById(guess[i]);
+            let num = countLetter(guess, result, guess[i]);
             if (result[i] === '0') {
                 hasn[i].push(guess[i]);
                 maxxx[guess[i]]=true;
@@ -504,9 +496,11 @@ function handleSubmit() {
                 }
             }
             else if (result[i] === '2') {
+                if(!(has[i].includes(guess[i])))hasalright[guess[i]]+=1;
+                if(num+hasalright[guess[i]]>hasright[guess[i]]) {
+                    hasright[guess[i]]=num+hasalright[guess[i]];
+                }
                 has[i].push(guess[i]);
-                if(Tile[i].className != 'grTile') hasalright[guess[i]]+=1;
-                if(Tile[i].className === 'Tile') hasright[guess[i]]+=1;
                 Tile[i].className = 'grTile';
                 tiles[i].style.color = '#f8f8ff';
                 tiles[i].style.backgroundColor = '#4b4';
@@ -518,10 +512,8 @@ function handleSubmit() {
             }
             else {
                 hasn[i].push(guess[i]);
-                let num = countLetter(guess, result, guess[i]);
-                let num2 = countLetter2(guess, result, guess[i]);
-                if(num+num2>hasright[guess[i]]) {
-                    hasright[guess[i]]=num+num2;
+                if(num+hasalright[guess[i]]>hasright[guess[i]]) {
+                    hasright[guess[i]]=num+hasalright[guess[i]];
                 }
                 num=hasright[guess[i]]-hasalright[guess[i]];
                 for (let j = 0; j < (costom?length2:length); j++) {
@@ -530,7 +522,7 @@ function handleSubmit() {
                         num--;
                     }
                     else {
-                        if(Tile[j].className==='yeTile')Tile[j].className = 'Tile';
+                        if(Tile[j].textContent === guess[i]&&Tile[j].className==='yeTile')Tile[j].className = 'Tile';
                     }
                 }
                 tiles[i].style.color = '#f8f8ff';
