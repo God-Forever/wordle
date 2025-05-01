@@ -687,7 +687,7 @@
                 <div class="code-box" id="answerMean"></div>
             </div>
             <div style="display:flex;align-items: center;">
-                <div id="cpd" style="position:absolute;bottom:42px; left:37px;">Link Copied!</div>
+                <div id="cpd" style="position:absolute;bottom:42px; left:37px;">Link copied!</div>
                 <div style="width:100%;display:flex;gap: 20px;">
                     <div class="fa fa-share" id="Share" style="margin-bottom: 10px; "></div>
                     <div class="fa fa-redo" id="RedoPopup" style="margin-bottom: 10px; "></div>
@@ -724,13 +724,24 @@
                     </label>
                 </div>
                 <hr style="display: block;height: 2px;margin: 25px 15px; border: 0;background: #ddf;">
-                <div>
+                <div style="display:flex; align-items: center;">
+                    <div>
+                        <div style="margin-left: 10px;text-align: left;font-weight: bold;" id="ns">Strict Mode</div>
+                        <div style="width:330px; margin-left: 10px;font-size: 15px;color:#aab;text-align: left;">Any revealed hints must be used in subsequent guesses</div>
+                    </div>
+                    <label class="switch" style="margin-left: auto; margin-right: 10px;">
+                        <input type="checkbox" id="strict">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <hr style="display: block;height: 2px;margin: 25px 15px; border: 0;background: #ddf;">
+                <div style="position:relative;">
                     <div style="font-weight: bold;">Custom Word</div>
                     <div style="width:400px; margin-left: 10px;font-size: 15px;color:#aab;text-align: left;">Create a custom game with a word consisting of 4-11 letters</div>
                     <input id="input" type="password" style="margin-top: 20px;position:relative;" placeholder="Your word..."></input>
                     <div id="see" class="fa fa-eye-slash" style="position: absolute; left:335px; margin-top: 32px;"></div>
                     <div id="Copy" style="margin-top: 20px; ">Copy Link</div>
-                    <div id="cpd2" style="position:absolute;bottom:42px; left:62px;">Link Copied!</div>
+                    <div id="cpd2" style="position:absolute;bottom:12px; left:39px;">Link copied!</div>
                 </div>
             </div>
         </div>
@@ -768,25 +779,80 @@
         let mini_words = null;
         let ext_words = null;
     </script>
-    <script src="https://gitee.com/GodForever/wordle/raw/main/javascript/wordlist.js"></script>
     <script src="javascript/mini_wordlist.js"></script>
-    <script src="https://gitee.com/GodForever/wordle/raw/main/javascript/word_meanings.js"></script>
-    <script src="https://gitee.com/GodForever/wordle/raw/main/javascript/extend_wordlist.js"></script>
     <script>
+        function loadScript(url, callback) {
+            var script = document.createElement('script');
+            script.type = 'text/javascript';
+            script.src = url;
+            script.onload = function() {
+                callback(true);
+            };
+            script.onerror = function() {
+                callback(false);
+            };
+            document.head.appendChild(script);
+        }
+        loadScript('https://gitee.com/GodForever/wordle/raw/main/javascript/word_meanings.js', function(success) {
+            if (!success) {
+                loadScript('javascript/word_meanings.js', function() {}); 
+            }
+        });
+        loadScript('https://gitee.com/GodForever/wordle/raw/main/javascript/wordlist.js', function(success) {
+            if (!success) {
+                loadScript('javascript/wordlist.js', function() {}); 
+            }
+        });
+        loadScript('https://gitee.com/GodForever/wordle/raw/main/javascript/extend_wordlist.js', function(success) {
+            if (!success) {
+                loadScript('javascript/extend_wordlist.js', function() {}); 
+            }
+        });
+    </script>
+    <script>
+        let keys = "QWERTYUIOPASDFGHJKLZXCVBNM";
         let cpms=[];
         function judge(){
-
+            for (let i = 0; i < keys.length; i++) {
+                let num=0;
+                for(let j=0;j<guess.length;j++)
+                {
+                    if(guess[j]==keys[i])num++;
+                }
+                if(num<hasright[keys[i]]) {
+                    return "At least "+hasright[keys[i]].toString()+" \""+keys[i]+"\""+(hasright[keys[i]]==1?"":"s");
+                }
+            }
+            for (let i = 0; i < guess.length; i++) {
+                let num=0;
+                for(let j=0;j<guess.length;j++)
+                {
+                    if(guess[j]==guess[i])num++;
+                }
+                if(num>hasright[guess[i]]&&maxxx[guess[i]]) {
+                    if(hasright[guess[i]]==0)return "No \""+guess[i]+"\""
+                    else return "At most "+hasright[guess[i]].toString()+" \""+guess[i]+"\""+(hasright[guess[i]]==1?"":"s");
+                }
+                if(hasn[i].includes(guess[i])) {
+                    return (i+1).toString()+((i+1)%10==1?"st":(i+1)%10==2?"nd":(i+1)%10==3?"rd":"th")+" is not \""+guess[i]+"\""
+                }
+                for(let j=0;j<has[i].length;j++) {
+                    if(has[i][j]!=guess[i])return (i+1).toString()+((i+1)%10==1?"st":(i+1)%10==2?"nd":(i+1)%10==3?"rd":"th")+" is \""+has[i][j]+"\""
+                }
+            }
+            return "accept";
         }
+        let strict = false;
         function copyToClipboard(text) {
             if (navigator.clipboard && window.isSecureContext) {
                 cpms.forEach(element => clearTimeout(element));
                 cpms=[];
                 document.getElementById('cpd').style.color='#4B4';
-                document.getElementById('cpd').textContent='Link Copied!';
+                document.getElementById('cpd').textContent='Link copied!';
                 document.getElementById('cpd').style.opacity=1;
                 document.getElementById('cpd2').style.color='#4B4';
-                document.getElementById('cpd2').style.left='62px';
-                document.getElementById('cpd2').textContent='Link Copied!';
+                document.getElementById('cpd2').style.left='39px';
+                document.getElementById('cpd2').textContent='Link copied!';
                 document.getElementById('cpd2').style.opacity=1;
                 cpms.push(setTimeout(()=>{document.getElementById('cpd').style.opacity = '0';document.getElementById('cpd2').style.opacity = '0';},1000));
                 return navigator.clipboard.writeText(text);
@@ -805,7 +871,7 @@
                         document.getElementById('cpd').textContent='Copy failed!';
                         document.getElementById('cpd').style.opacity=1;
                         document.getElementById('cpd2').style.color='#f77';
-                        document.getElementById('cpd2').style.left='62px';
+                        document.getElementById('cpd2').style.left='39px';
                         document.getElementById('cpd2').textContent='Copy failed!';
                         document.getElementById('cpd2').style.opacity=1;
                         cpms.push(setTimeout(()=> {document.getElementById('cpd').style.opacity = '0';document.getElementById('cpd2').style.opacity = '0';},1000));
@@ -815,11 +881,11 @@
                         cpms.forEach(element => clearTimeout(element));
                         cpms=[];
                         document.getElementById('cpd').style.color='#4B4';
-                        document.getElementById('cpd').textContent='Link Copied!';
+                        document.getElementById('cpd').textContent='Link copied!';
                         document.getElementById('cpd').style.opacity=1;
                         document.getElementById('cpd2').style.color='#4B4';
-                        document.getElementById('cpd2').style.left='62px';
-                        document.getElementById('cpd2').textContent='Link Copied!';
+                        document.getElementById('cpd2').style.left='39px';
+                        document.getElementById('cpd2').textContent='Link copied!';
                         document.getElementById('cpd2').style.opacity=1;
                         cpms.push(setTimeout(()=> {document.getElementById('cpd').style.opacity = '0';document.getElementById('cpd2').style.opacity = '0';},1000));
                     }
@@ -830,7 +896,7 @@
                     document.getElementById('cpd').textContent='Copy failed!';
                     document.getElementById('cpd').style.opacity=1;
                     document.getElementById('cpd2').style.color='#f77';
-                    document.getElementById('cpd2').style.left='62px';
+                    document.getElementById('cpd2').style.left='39px';
                     document.getElementById('cpd2').textContent='Copy failed!';
                     document.getElementById('cpd2').style.opacity=1;
                     cpms.push(setTimeout(()=> {document.getElementById('cpd').style.opacity = '0';document.getElementById('cpd2').style.opacity = '0';},1000));
@@ -864,11 +930,12 @@
         let length = 5;
         let see = true;
         let lastWord = {};
-        function saveToCookie(length, use_mini,see,circl,lastWord) {
+        function saveToCookie(length, use_mini,see,circl,strict,lastWord) {
             localStorage.setItem('length', length);
             localStorage.setItem('use_mini', use_mini);
             localStorage.setItem('see', see);
             localStorage.setItem('circl', circl);
+            localStorage.setItem('strict', strict);
             localStorage.setItem('lastWord',JSON.stringify(lastWord));
         }
         function loadFromCookie() {
@@ -876,6 +943,7 @@
             use_mini = localStorage.getItem('use_mini') == null ? false : localStorage.getItem('use_mini') === 'true';
             see = localStorage.getItem('see') == null ? true : localStorage.getItem('see') === 'true';
             circl = localStorage.getItem('circl') == null ? false : localStorage.getItem('circl') === 'true';
+            strict = localStorage.getItem('strict') == null ? false : localStorage.getItem('strict') === 'true';
             lastWord = localStorage.getItem('lastWord') == null ? {} : JSON.parse(localStorage.getItem('lastWord'));
         }
         loadFromCookie();
@@ -934,7 +1002,7 @@
             });
             selectedDiv.classList.add('selected');
             length = parseInt(selectedDiv.dataset.value);
-            saveToCookie(length,use_mini,see,circl,lastWord);
+            saveToCookie(length,use_mini,see,circl,strict,lastWord);
             costom = false;
             history.pushState(null, '', window.location.pathname);
             isWin = false;
@@ -970,6 +1038,7 @@
         }
         document.getElementById('easy').checked=use_mini;
         document.getElementById('circle').checked=circl;
+        document.getElementById('strict').checked=strict;
         var switches = document.querySelectorAll('.switch input[type="checkbox"]');
         switches.forEach(function(switchElement) {
             switchElement.addEventListener('change', function(event) {
@@ -977,11 +1046,15 @@
                 var switchState = event.target.checked;
                 if (switchId === 'easy') {
                     use_mini = switchState;
-                    saveToCookie(length,use_mini,see,circl,lastWord);
+                    saveToCookie(length,use_mini,see,circl,strict,lastWord);
                 }
                 if (switchId === 'circle') {
                     circl = switchState;
-                    saveToCookie(length,use_mini,see,circl,lastWord);
+                    saveToCookie(length,use_mini,see,circl,strict,lastWord);
+                }
+                if (switchId === 'strict') {
+                    strict = switchState;
+                    saveToCookie(length,use_mini,see,circl,strict,lastWord);
                 }
                 costom = false;
                 history.pushState(null, '', window.location.pathname);
@@ -1039,14 +1112,14 @@
                 document.getElementById('see').style.left="335px";
                 document.getElementById('input').type = 'text';
                 see=true;
-                saveToCookie(length,use_mini,see,circl,lastWord);
+                saveToCookie(length,use_mini,see,circl,strict,lastWord);
             }
             else if(document.getElementById('see').className==="fa fa-eye-slash") {
                 document.getElementById('see').className="fa fa-eye";
                 document.getElementById('see').style.left="336px";
                 document.getElementById('input').type = 'password';
                 see=false;
-                saveToCookie(length,use_mini,see,circl,lastWord);
+                saveToCookie(length,use_mini,see,circl,strict,lastWord);
             }
         });
         document.getElementById('Share').addEventListener('click', () => {
@@ -1066,7 +1139,7 @@
                 cpms.forEach(element => clearTimeout(element));
                 cpms=[];
                 document.getElementById('cpd2').style.color='#f77';
-                document.getElementById('cpd2').style.left='60px';
+                document.getElementById('cpd2').style.left='37px';
                 document.getElementById('cpd2').textContent='Invalid word!';
                 document.getElementById('cpd2').style.opacity=1;
                 cpms.push(setTimeout(()=> {document.getElementById('cpd2').style.opacity = '0';},1000));
@@ -1129,12 +1202,15 @@
                 board.appendChild(row);
             }
         }
-        let keys = "QWERTYUIOPASDFGHJKZXCVBNM";
         let hasright={};
         let hasalright={};
+        let maxxx={};
+        let has=[];
+        let hasn=[];
         for (let i = 0; i < keys.length; i++) {
             hasright[keys[i]] = 0;
             hasalright[keys[i]] = 0;
+            maxxx[keys[i]] = false;
         }
         function countLetter(str, o, letter) {
             let count = 0;
@@ -1185,6 +1261,23 @@
                 },1000));
                 return;
             }
+            if(strict) {
+                let jd=judge();
+                if(jd!="accept") {
+                    const mess = document.getElementById('cant');
+                    messages.forEach(element => clearTimeout(element));
+                    messages=[];
+                    mess.style.color='#f77';
+                    mess.textContent=jd+"!";
+                    mess.style.visibility = 'visible';
+                    mess.style.opacity = '1';
+                    messages.push(setTimeout(()=> {
+                        mess.style.opacity = '0';
+                        messages.push(setTimeout(()=> {mess.style.visibility = 'hidden';},200));
+                    },1000));
+                    return;
+                }
+            }
             if (currentRow < 6) {
                 for (let i = 0; i < (costom?length2:length); i++) {
                     if (guess[i] === targetWord[i]) 
@@ -1213,14 +1306,17 @@
                 for (let i = 0; i < (costom?length2:length); i++) {
                     const key = document.getElementById(guess[i]);
                     if (result[i] === '0') {
+                        hasn[i].push(guess[i]);
+                        maxxx[guess[i]]=true;
                         tiles[i].style.color = '#f8f8ff';
                         tiles[i].style.backgroundColor = '#aac';
                         tiles[i].style.border = '2px solid #aac';
-                        if (key.className === 'key') {
+                        if (key.className === 'keys key') {
                             key.className = 'keys gy-key';
                         }
                     }
                     else if (result[i] === '2') {
+                        has[i].push(guess[i]);
                         if(Tile[i].className != 'grTile') hasalright[guess[i]]+=1;
                         if(Tile[i].className === 'Tile') hasright[guess[i]]+=1;
                         Tile[i].className = 'grTile';
@@ -1233,6 +1329,7 @@
                         }
                     }
                     else {
+                        hasn[i].push(guess[i]);
                         let num = countLetter(guess, result, guess[i]);
                         let num2 = countLetter2(guess, result, guess[i]);
                         if(num+num2>hasright[guess[i]]) {
@@ -1350,7 +1447,7 @@
                 updateTile('\u21b5');
             }
             lastWord[costom?length2:length]=targetWord;
-            saveToCookie((costom?length2:length),use_mini,see,circl,lastWord);
+            saveToCookie((costom?length2:length),use_mini,see,circl,strict,lastWord);
         }
         var queryString = window.location.search.substring(1);
         let targetWord = 'TRACE';
@@ -1392,6 +1489,13 @@
             for (let i = 0; i < keys.length; i++) {
                 hasright[keys[i]] = 0;
                 hasalright[keys[i]] = 0;
+                maxxx[keys[i]]=false;
+            }
+            has=[];
+            hasn=[];
+            for (let i = 0; i < (costom?length2:length); i++) {
+                has.push([]);
+                hasn.push([]);
             }
             guess = '';
             messages = [];
@@ -1438,7 +1542,7 @@
                         option.classList.remove('selected');
                         if (parseInt(option.dataset.value)===number)option.classList.add('selected');
                     });
-                    saveToCookie(length,use_mini,see,circl,lastWord);
+                    saveToCookie(length,use_mini,see,circl,strict,lastWord);
                     costom = false;
                     history.pushState(null, '', window.location.pathname);
                     isWin = false;
@@ -1486,21 +1590,34 @@
                         copylink();
                     }
                     else if(document.getElementById('input') === document.activeElement) {
+                        document.getElementById('input').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
                         if(document.getElementById('see').className==="fa fa-eye") {
                             document.getElementById('see').className="fa fa-eye-slash";
                             document.getElementById('see').style.left="335px";
                             document.getElementById('input').type = 'text';
                             see=true;
-                            saveToCookie(length,use_mini,see,circl,lastWord);
+                            saveToCookie(length,use_mini,see,circl,strict,lastWord);
                         }
                         else if(document.getElementById('see').className==="fa fa-eye-slash") {
                             document.getElementById('see').className="fa fa-eye";
                             document.getElementById('see').style.left="336px";
                             document.getElementById('input').type = 'password';
                             see=false;
-                            saveToCookie(length,use_mini,see,circl,lastWord);
+                            saveToCookie(length,use_mini,see,circl,strict,lastWord);
                         }
                     }
+                    else if(document.getElementById('settinglay').style.visibility === "visible"&&document.getElementById('input') != document.activeElement)
+                    {
+                        document.getElementById('ns').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                        if(document.getElementById('strict').checked) {
+                            document.getElementById('strict').checked=false;
+                            saveToCookie(length,use_mini,see,circl,strict,lastWord);
+                        }
+                        else {
+                            document.getElementById('strict').checked=true;
+                            saveToCookie(length,use_mini,see,circl,strict,lastWord);
+                        }
+                    } 
                     else {
                         document.getElementById('settinglay').style.visibility = 'visible';
                         document.getElementById('settinglay').style.opacity = '1';
@@ -1537,11 +1654,11 @@
                         document.getElementById('nf').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
                         if(document.getElementById('easy').checked) {
                             document.getElementById('easy').checked=false;
-                            saveToCookie(length,use_mini,see,circl,lastWord);
+                            saveToCookie(length,use_mini,see,circl,strict,lastWord);
                         }
                         else {
                             document.getElementById('easy').checked=true;
-                            saveToCookie(length,use_mini,see,circl,lastWord);
+                            saveToCookie(length,use_mini,see,circl,strict,lastWord);
                         }
                     }
                 }
@@ -1553,11 +1670,11 @@
                         document.getElementById('nc').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
                         if(document.getElementById('circle').checked) {
                             document.getElementById('circle').checked=false;
-                            saveToCookie(length,use_mini,see,circl,lastWord);
+                            saveToCookie(length,use_mini,see,circl,strict,lastWord);
                         }
                         else {
                             document.getElementById('circle').checked=true;
-                            saveToCookie(length,use_mini,see,circl,lastWord);
+                            saveToCookie(length,use_mini,see,circl,strict,lastWord);
                         }
                     }
                 }
@@ -1650,6 +1767,7 @@
                 event.preventDefault();
                 if(document.getElementById('input') === document.activeElement)
                 {
+                    document.getElementById('Copy').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
                     var word = document.getElementById('input').value.toUpperCase();
                     var exist = false;
                         for (let i = 4; i < 12; i++) {
@@ -1663,7 +1781,7 @@
                         cpms.forEach(element => clearTimeout(element));
                         cpms=[];
                         document.getElementById('cpd2').style.color='#f77';
-                        document.getElementById('cpd2').style.left='60px';
+                        document.getElementById('cpd2').style.left='37px';
                         document.getElementById('cpd2').textContent='Invalid word!';
                         document.getElementById('cpd2').style.opacity=1;
                         cpms.push(setTimeout(()=> {document.getElementById('cpd2').style.opacity = '0';},1000));
