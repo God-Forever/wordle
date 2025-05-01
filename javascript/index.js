@@ -636,6 +636,17 @@ function createKeyboard() {
     }
     lastWord[costom?length2:length]=targetWord;
     saveToCookie((costom?length2:length),use_mini,see,circl,strict,lastWord);
+    for (let i = 0; i < keys.length; i++) {
+        hasright[keys[i]] = 0;
+        hasalright[keys[i]] = 0;
+        maxxx[keys[i]]=false;
+    }
+    has=[];
+    hasn=[];
+    for (let i = 0; i < (costom?length2:length); i++) {
+        has.push([]);
+        hasn.push([]);
+    }
 }
 var queryString = window.location.search.substring(1);
 let targetWord = 'TRACE';
@@ -674,17 +685,6 @@ function init(part=false) {
     }
     currentRow = 0;
     currentTile = 0;
-    for (let i = 0; i < keys.length; i++) {
-        hasright[keys[i]] = 0;
-        hasalright[keys[i]] = 0;
-        maxxx[keys[i]]=false;
-    }
-    has=[];
-    hasn=[];
-    for (let i = 0; i < (costom?length2:length); i++) {
-        has.push([]);
-        hasn.push([]);
-    }
     guess = '';
     messages = [];
     document.getElementById('buttons').style.display = 'flex';
