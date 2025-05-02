@@ -36,8 +36,8 @@ function judge(){
 }
 function judge2() {
     for (let k = 0; k < guesses.length; k++) {
-        let result = '0'.repeat(costom?length2:length);
-        for (let i = 0; i < (costom?length2:length); i++) {
+        let result = '0'.repeat(length);
+        for (let i = 0; i < (length); i++) {
             if (guesses[k][0][i] === guess[i]) 
             {
                 if(result[i]==='1') 
@@ -470,7 +470,7 @@ function createBoard() {
         row.className = 'board-row';
         row.style.marginLeft = '10px';
          row.style.marginRight = '10px';
-        for (let j = 0; j < (costom?length2:length); j++) {
+        for (let j = 0; j < (length); j++) {
             const tile = document.createElement('div');
             tile.className = 'tile';
             row.appendChild(tile);
@@ -510,7 +510,7 @@ function countLetter(str, o, letter) {
     return count;
 }
 function handleSubmit() {
-    if (currentTile < (costom?length2:length)) {
+    if (currentTile < (length)) {
         const mess = document.getElementById('cant');
         messages.forEach(element => clearTimeout(element));
         messages=[];
@@ -525,7 +525,7 @@ function handleSubmit() {
         return;
     }
     
-    if (!(ext_words[costom?length2:length].includes(guess)))
+    if (!(ext_words[length].includes(guess)))
     {
         const mess = document.getElementById('cant');
         messages.forEach(element => clearTimeout(element));
@@ -558,8 +558,8 @@ function handleSubmit() {
         }
     }
     if (currentRow < tries||infine) {
-        let result = '0'.repeat(costom?length2:length);
-        for (let i = 0; i < (costom?length2:length); i++) {
+        let result = '0'.repeat(length);
+        for (let i = 0; i < (length); i++) {
             if (guess[i] === targetWord[i]) 
             {
                 if(result[i]==='1') 
@@ -578,7 +578,7 @@ function handleSubmit() {
                 }
             }
         }
-        if (result === '2'.repeat(costom?length2:length)) {
+        if (result === '2'.repeat(length)) {
             isWin = true;
         }
         const rows = document.querySelectorAll('.board-row');
@@ -601,7 +601,7 @@ function handleSubmit() {
             tiles[result.length+1].style.border = '2px solid #ec3';
             tiles[result.length+1].textContent=yee;
         }
-        for (let i = 0; i < (costom?length2:length); i++) {
+        for (let i = 0; i < (length); i++) {
             const key = document.getElementById(guess[i]);
             let num = countLetter(guess, result, guess[i]);
             if (result[i] === '0') {
@@ -639,7 +639,7 @@ function handleSubmit() {
                     hasright[guess[i]]=num+hasalright[guess[i]];
                 }
                 num=hasright[guess[i]]-hasalright[guess[i]];
-                for (let j = 0; j < (costom?length2:length); j++) {
+                for (let j = 0; j < (length); j++) {
                     if (num > 0 && Tile[j].textContent === guess[i] && Tile[j].className != 'grTile') {
                         Tile[j].className = 'yeTile';
                         num--;
@@ -686,7 +686,7 @@ function handleSubmit() {
                 row.className = 'board-row';
                 row.style.marginLeft = '10px';
                 row.style.marginRight = '10px';
-                for (let j = 0; j < (costom?length2:length); j++) {
+                for (let j = 0; j < (length); j++) {
                     const tile = document.createElement('div');
                     tile.className = 'tile';
                     row.appendChild(tile);
@@ -740,7 +740,7 @@ function updateTile(key) {
         handleSubmit();
     }
     else {
-        if (currentTile < (costom?length2:length)) {
+        if (currentTile < (length)) {
             guess += key;
             tiles[currentTile].textContent = key;
             currentTile++;
@@ -781,22 +781,21 @@ function createKeyboard() {
     has=[];
     hasn=[];
     guesses=[];
-    for (let i = 0; i < (costom?length2:length); i++) {
+    for (let i = 0; i < (length); i++) {
         has.push([]);
         hasn.push([]);
     }
-    if(circl&&lastWord[costom?length2:length]!=undefined) {
-        for (var i = 0; i < (costom?length2:length); i++) {
-            updateTile(lastWord[costom?length2:length][i].toUpperCase());
+    if(circl&&lastWord[length]!=undefined) {
+        for (var i = 0; i < (length); i++) {
+            updateTile(lastWord[length][i].toUpperCase());
         }
         updateTile('\u21b5');
     }
-    lastWord[costom?length2:length]=targetWord;
+    lastWord[length]=targetWord;
     saveToCookie();
 }
 var queryString = window.location.search.substring(1);
 let targetWord = 'TRACE';
-let length2 = 4;
 function init(part=false) {
     generateOptions();
     document.getElementById('overlay').opacity = '0';
@@ -848,7 +847,7 @@ if (queryString != '')
     let word_=decode62(queryString);
     if (/^[A-Z]+$/.test(word_)) {
         targetWord = word_;
-        length2 = targetWord.length;
+        length = targetWord.length;
         costom = true;
     }
     else {
@@ -1073,7 +1072,7 @@ document.addEventListener('keydown', (e) => {
                             if (/^[A-Z]+$/.test(word_))
                             {
                                 targetWord = word_;
-                                length2 = targetWord.length;
+                                length = targetWord.length;
                                 costom = true;
                                 history.pushState(null, '', text);
                             }
