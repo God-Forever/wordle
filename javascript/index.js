@@ -413,7 +413,7 @@ document.getElementById('Copy').addEventListener('click', () => {
         cpms.forEach(element => clearTimeout(element));
         cpms=[];
         document.getElementById('cpd2').style.color='#f77';
-        document.getElementById('cpd2').style.left='37px';
+        document.getElementById('cpd2').style.left='34px';
         document.getElementById('cpd2').textContent='Invalid word!';
         document.getElementById('cpd2').style.opacity=1;
         cpms.push(setTimeout(()=> {document.getElementById('cpd2').style.opacity = '0';},1000));
@@ -1162,7 +1162,7 @@ document.addEventListener('keydown', (e) => {
                 cpms.forEach(element => clearTimeout(element));
                 cpms=[];
                 document.getElementById('cpd2').style.color='#f77';
-                document.getElementById('cpd2').style.left='37px';
+                document.getElementById('cpd2').style.left='34px';
                 document.getElementById('cpd2').textContent='Invalid word!';
                 document.getElementById('cpd2').style.opacity=1;
                 cpms.push(setTimeout(()=> {document.getElementById('cpd2').style.opacity = '0';},1000));
