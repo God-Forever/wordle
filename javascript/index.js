@@ -152,13 +152,13 @@ function generateOptions() {
     var options_ = document.querySelectorAll('.option');
     if(hd==true) {
         options_.forEach(function(option) {
-            if(parseInt(option.dataset.value)===10||parseInt(option.dataset.value)===11)
+            if(parseInt(option.dataset.value)===9||parseInt(option.dataset.value)===10||parseInt(option.dataset.value)===11)
                 option.dataset.disabled="true";
         });
     }
     else {
         options_.forEach(function(option) {
-            if(parseInt(option.dataset.value)===10||parseInt(option.dataset.value)===11)
+            if(parseInt(option.dataset.value)===9||parseInt(option.dataset.value)===10||parseInt(option.dataset.value)===11)
                 option.dataset.disabled="false";
         });
     }
@@ -310,13 +310,13 @@ switches.forEach(function(switchElement) {
             var options = document.querySelectorAll('.option');
             if(switchState==true) {
             saveToCookie();    options.forEach(function(option) {
-                    if(parseInt(option.dataset.value)===10||parseInt(option.dataset.value)===11)
+                    if(parseInt(option.dataset.value)===9||parseInt(option.dataset.value)===10||parseInt(option.dataset.value)===11)
                         option.dataset.disabled="true";
                 });
             }
             else {
                 options.forEach(function(option) {
-                    if(parseInt(option.dataset.value)===10||parseInt(option.dataset.value)===11)
+                    if(parseInt(option.dataset.value)===9||parseInt(option.dataset.value)===10||parseInt(option.dataset.value)===11)
                         option.dataset.disabled="false";
                 });
             }
@@ -325,7 +325,7 @@ switches.forEach(function(switchElement) {
                 length=number;
                 options.forEach(function(option) {
                     option.classList.remove('selected');
-                    if (parseInt(option.dataset.value)===number)option.classList.add('selected');
+                    if (parseInt(option.dataset.value)===9||parseInt(option.dataset.value)===number)option.classList.add('selected');
                 });
             }
             
@@ -435,11 +435,13 @@ document.getElementById('giveUp').addEventListener('click', () => {
         const result = document.getElementById('win');
         result.style.visibility = 'visible';
         result.style.opacity = '1';
+        if(hd) resubmit();
     }
     else if (currentRow == tries) {
         const result = document.getElementById('lost');
         result.style.visibility = 'visible';
         result.style.opacity = '1';
+        if(hd) resubmit();
     }
     document.getElementById('overlay').style.visibility = 'visible';
     document.getElementById('overlay').style.opacity = '1';
@@ -478,6 +480,7 @@ function createBoard() {
         if(hd) {
             const green = document.createElement('div');
             green.className = 'tile';
+            green.style.marginLeft = '30px';
             green.style.backgroundColor = '#dde';
             green.style.border = '2px solid #dde';
             row.appendChild(green);
@@ -508,6 +511,66 @@ function countLetter(str, o, letter) {
         }
     }
     return count;
+}
+function countLetter2(str, o, letter) {
+    let count = 0;
+    for (let i = 0; i < str.length; i++) {
+        if (str[i] === letter && o[i] === '2') {
+        count++;
+        }
+    }
+    return count;
+}
+function resubmit() {
+    for (let k = 0; k < guesses.length; k++) {
+        let result = '0'.repeat(length);
+        for (let i = 0; i < (length); i++) {
+            if (guesses[k][0][i] === targetWord[i]) 
+            {
+                if(result[i]==='1') 
+                for (let j = i+1; j < guesses[k][0].length; j++) {
+                    if (guesses[k][0][j] === targetWord[i] && result[j] === '0') {
+                        result = result.substring(0, j) + '1' + result.substring(j + 1);
+                        break;
+                    }
+                }
+                result = result.substring(0, i) + '2' + result.substring(i + 1);
+            }
+            else for (let j = 0; j < guesses[k][0].length; j++) {
+                if (guesses[k][0][j] === targetWord[i] && result[j] === '0') {
+                    result = result.substring(0, j) + '1' + result.substring(j + 1);
+                    break;
+                }
+            }
+        }
+        const rows = document.querySelectorAll('.board-row');
+        const tiles = rows[k].querySelectorAll('.tile');
+        for (let i = 0; i < (length); i++) {
+            const key = document.getElementById(guesses[k][0][i]);
+            if (result[i] === '0') {
+                tiles[i].style.color = '#f8f8ff';
+                tiles[i].style.backgroundColor = '#aac';
+                tiles[i].style.border = '2px solid #aac';
+                if (key.className === 'keys key') {
+                    key.className = 'keys gy-key';
+                }
+            }
+            else if (result[i] === '2') {
+                tiles[i].style.color = '#f8f8ff';
+                tiles[i].style.backgroundColor = '#4b4';
+                tiles[i].style.border = '2px solid #4b4';
+                key.className = 'keys gr-key';
+            }
+            else {
+                tiles[i].style.color = '#f8f8ff';
+                tiles[i].style.backgroundColor = '#ec3';
+                tiles[i].style.border = '2px solid #ec3';
+                if (key.className != 'keys gr-key') {
+                    key.className = 'keys ye-key';
+                }
+            }
+        }
+    }
 }
 function handleSubmit() {
     if (currentTile < (length)) {
@@ -581,6 +644,7 @@ function handleSubmit() {
         if (result === '2'.repeat(length)) {
             isWin = true;
         }
+        let canshow=(result === '0'.repeat(length));
         const rows = document.querySelectorAll('.board-row');
         const tiles = rows[currentRow].querySelectorAll('.tile');
         if(hd)
@@ -604,6 +668,7 @@ function handleSubmit() {
         for (let i = 0; i < (length); i++) {
             const key = document.getElementById(guess[i]);
             let num = countLetter(guess, result, guess[i]);
+            let num2 = countLetter2(guess, result, guess[i]);
             if (result[i] === '0') {
                 hasn[i].push(guess[i]);
                 maxxx[guess[i]]=true;
@@ -615,11 +680,19 @@ function handleSubmit() {
                         key.className = 'keys gy-key';
                     }
                 }
+                else if(canshow) {
+                    if (key.className === 'keys key') {
+                        key.className = 'keys gy-key';
+                    }
+                }
             }
             else if (result[i] === '2') {
                 if(!(has[i].includes(guess[i])))hasalright[guess[i]]+=1;
-                if(num+hasalright[guess[i]]>hasright[guess[i]]) {
-                    hasright[guess[i]]=num+hasalright[guess[i]];
+                if(num+num2>hasright[guess[i]]) {
+                    hasright[guess[i]]=num+num2;
+                }
+                if(hasalright[guess[i]]>hasright[guess[i]]) {
+                    hasright[guess[i]]=hasalright[guess[i]];
                 }
                 has[i].push(guess[i]);
                 Tile[i].className = 'grTile';
@@ -635,8 +708,11 @@ function handleSubmit() {
             }
             else {
                 hasn[i].push(guess[i]);
-                if(num+hasalright[guess[i]]>hasright[guess[i]]) {
-                    hasright[guess[i]]=num+hasalright[guess[i]];
+                if(num+num2>hasright[guess[i]]) {
+                    hasright[guess[i]]=num+num2;
+                }
+                if(hasalright[guess[i]]>hasright[guess[i]]) {
+                    hasright[guess[i]]=hasalright[guess[i]];
                 }
                 num=hasright[guess[i]]-hasalright[guess[i]];
                 for (let j = 0; j < (length); j++) {
@@ -668,6 +744,7 @@ function handleSubmit() {
             const result = document.getElementById('win');
             result.style.visibility = 'visible';
             result.style.opacity = '1';
+            if(hd) resubmit();
             setTimeout(()=> {
                 document.getElementById('overlay').style.visibility = 'visible';
                 document.getElementById('overlay').style.opacity = '1';
@@ -694,6 +771,7 @@ function handleSubmit() {
                 if(hd) {
                     const green = document.createElement('div');
                     green.className = 'tile';
+                    green.style.marginLeft = '30px';
                     green.style.backgroundColor = '#dde';
                     green.style.border = '2px solid #dde';
                     row.appendChild(green);
@@ -859,8 +937,8 @@ else {
 }
 init();
 var options_ = document.querySelectorAll('.option');
-if(hd==true&&(length==10||length==11)) {
-    let number=9;
+if(hd==true&&(length==10||length==11||length==9)) {
+    let number=8;
     length=number;
     options_.forEach(function(option) {
         option.classList.remove('selected');
@@ -877,7 +955,7 @@ document.addEventListener('keydown', (e) => {
     else if ((e.key.match(/^[4-9]$/i)||e.key ==='a'||e.key ==='b') && !e.ctrlKey && !e.altKey && !e.shiftKey && document.activeElement!=document.getElementById('input')) {
         event.preventDefault();
         var number=e.key ==='a'?10:e.key ==='b'?11:parseInt(e.key);
-        if(!hd||(e.key !='a'&&e.key !='b'))
+        if(!hd||(e.key !='9'&&e.key !='a'&&e.key !='b'))
         {
         if(document.getElementById('settinglay').style.visibility === "visible") {
             document.getElementById('nn').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
