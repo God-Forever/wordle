@@ -44,7 +44,7 @@
                         <div style="width:330px; margin-left: 10px;font-size: 15px;color:#aab;text-align: left;">Answer will be selected from top 10000 words</div>
                     </div>
                     <label class="switch" style="margin-left: auto; margin-right: 10px;">
-                        <input type="checkbox" id="easy">
+                        <input type="checkbox" id="easy" style="display: none;">
                         <span class="slider round"></span>
                     </label>
                 </div>
@@ -55,7 +55,7 @@
                         <div style="width:330px; margin-left: 10px;font-size: 15px;color:#aab;text-align: left;">Answer of the previous round will serve as the first guess for the next round</div>
                     </div>
                     <label class="switch" style="margin-left: auto; margin-right: 10px;">
-                        <input type="checkbox" id="circle">
+                        <input type="checkbox" id="circle" style="display: none;">
                         <span class="slider round"></span>
                     </label>
                 </div>
@@ -66,18 +66,40 @@
                         <div style="width:330px; margin-left: 10px;font-size: 15px;color:#aab;text-align: left;">Any revealed hints must be used in subsequent guesses</div>
                     </div>
                     <label class="switch" style="margin-left: auto; margin-right: 10px;">
-                        <input type="checkbox" id="strict">
+                        <input type="checkbox" id="strict" style="display: none;">
                         <span class="slider round"></span>
                     </label>
                 </div>
                 <hr style="display: block;height: 2px;margin: 25px 15px; border: 0;background: #ddf;">
-                <div style="position:relative;">
+                <div style="display:flex; align-items: center;">
+                    <div>
+                        <div style="margin-left: 10px;text-align: left;font-weight: bold;" id="nh">Hard Mode</div>
+                        <div style="width:330px; margin-left: 10px;font-size: 15px;color:#aab;text-align: left;">Show the quantity of green and yellow instead of their positions</div>
+                    </div>
+                    <label class="switch" style="margin-left: auto; margin-right: 10px;">
+                        <input type="checkbox" id="hard" style="display: none;">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <hr style="display: block;height: 2px;margin: 25px 15px; border: 0;background: #ddf;">
+                <div style="display:flex; align-items: center;">
+                    <div>
+                        <div style="margin-left: 10px;text-align: left;font-weight: bold;" id="ni">Infinity Mode</div>
+                        <div style="width:330px; margin-left: 10px;font-size: 15px;color:#aab;text-align: left;">Allow you to have infinite tries</div>
+                    </div>
+                    <label class="switch" style="margin-left: auto; margin-right: 10px;">
+                        <input type="checkbox" id="infine" style="display: none;">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <hr style="display: block;height: 2px;margin: 25px 15px; border: 0;background: #ddf;">
+                <div>
                     <div style="font-weight: bold;">Custom Word</div>
                     <div style="width:400px; margin-left: 10px;font-size: 15px;color:#aab;text-align: left;">Create a custom game with a word consisting of 4-11 letters</div>
-                    <input id="input" type="password" style="margin-top: 20px;position:relative;" placeholder="Your word..."></input>
+                    <input id="input" type="password" style="margin-top: 20px;" placeholder="Your word..."></input>
                     <div id="see" class="fa fa-eye-slash" style="position: absolute; left:335px; margin-top: 32px;"></div>
                     <div id="Copy" style="margin-top: 20px; ">Copy Link</div>
-                    <div id="cpd2" style="position:absolute;bottom:12px; left:39px;">Link copied!</div>
+                    <div id="cpd2" style="position:absolute;bottom:-255px; left:39px;">Link copied!</div>
                 </div>
             </div>
         </div>
@@ -102,7 +124,7 @@
                 <div id="reDo" class="fa fa-redo"></div>
             </div>
             <div class="game-container">
-                <div id="board" class="board">
+                <div id="board" class="board" style="max-height: 430px; overflow-y: auto;">
                 </div>
                 <div id="keyboard" class="keyboard">
                 </div>

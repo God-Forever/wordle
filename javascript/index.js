@@ -1,5 +1,9 @@
 let keys = "QWERTYUIOPASDFGHJKLZXCVBNM";
 let cpms=[];
+let hd=false;
+let guesses=[];
+let tries=6;
+let infine=false;
 function judge(){
     for (let i = 0; i < keys.length; i++) {
         let num=0;
@@ -27,6 +31,39 @@ function judge(){
         for(let j=0;j<has[i].length;j++) {
             if(has[i][j]!=guess[i])return (i+1).toString()+((i+1)%10==1?"st":(i+1)%10==2?"nd":(i+1)%10==3?"rd":"th")+" is \""+has[i][j]+"\""
         }
+    }
+    return "accept";
+}
+function judge2() {
+    for (let k = 0; k < guesses.length; k++) {
+        let result = '0'.repeat(costom?length2:length);
+        for (let i = 0; i < (costom?length2:length); i++) {
+            if (guesses[k][0][i] === guess[i]) 
+            {
+                if(result[i]==='1') 
+                for (let j = i+1; j < guess.length; j++) {
+                    if (guesses[k][0][j] === guess[i] && result[j] === '0') {
+                        result = result.substring(0, j) + '1' + result.substring(j + 1);
+                        break;
+                    }
+                }
+                result = result.substring(0, i) + '2' + result.substring(i + 1);
+            }
+            else for (let j = 0; j < guess.length; j++) {
+                if (guesses[k][0][j] === guess[i] && result[j] === '0') {
+                    result = result.substring(0, j) + '1' + result.substring(j + 1);
+                    break;
+                }
+            }
+        }
+        let grr=0;
+        let yee=0;
+        for(let i=0;i<result.length;i++) {
+            if(result[i]==1)yee++;
+            else if(result[i]==2)grr++;
+        }
+        if(grr!=guesses[k][1])return (guesses[k][1].toString()==0?"No green in ":(guesses[k][1].toString()+(guesses[k][1].toString()==1?" green in ":" greens in ")))+(k+1).toString()+((k+1)%10==1?"st":(k+1)%10==2?"nd":(k+1)%10==3?"rd":"th")+" guess";
+        if(yee!=guesses[k][2])return (guesses[k][2].toString()==0?"No yellow in ":(guesses[k][2].toString()+(guesses[k][2].toString()==1?" yellow in ":" yellows in ")))+(k+1).toString()+((k+1)%10==1?"st":(k+1)%10==2?"nd":(k+1)%10==3?"rd":"th")+" guess";
     }
     return "accept";
 }
@@ -103,6 +140,7 @@ function generateOptions() {
         div.className = 'option';
         div.textContent = i;
         div.dataset.value = i;
+        div.dataset.disabled = "false";
         div.addEventListener('click', function() {
             selectOption(this);
         });
@@ -111,6 +149,19 @@ function generateOptions() {
         }
         container.appendChild(div);
     }
+    var options_ = document.querySelectorAll('.option');
+    if(hd==true) {
+        options_.forEach(function(option) {
+            if(parseInt(option.dataset.value)===10||parseInt(option.dataset.value)===11)
+                option.dataset.disabled="true";
+        });
+    }
+    else {
+        options_.forEach(function(option) {
+            if(parseInt(option.dataset.value)===10||parseInt(option.dataset.value)===11)
+                option.dataset.disabled="false";
+        });
+    }
 }
 let costom = false;
 let circl = false;
@@ -118,12 +169,14 @@ let use_mini = false;
 let length = 5;
 let see = true;
 let lastWord = {};
-function saveToCookie(length, use_mini,see,circl,strict,lastWord) {
+function saveToCookie() {
     localStorage.setItem('length', length);
     localStorage.setItem('use_mini', use_mini);
     localStorage.setItem('see', see);
     localStorage.setItem('circl', circl);
     localStorage.setItem('strict', strict);
+    localStorage.setItem('hd', hd);
+    localStorage.setItem('infine', infine);
     localStorage.setItem('lastWord',JSON.stringify(lastWord));
 }
 function loadFromCookie() {
@@ -132,6 +185,8 @@ function loadFromCookie() {
     see = localStorage.getItem('see') == null ? true : localStorage.getItem('see') === 'true';
     circl = localStorage.getItem('circl') == null ? false : localStorage.getItem('circl') === 'true';
     strict = localStorage.getItem('strict') == null ? false : localStorage.getItem('strict') === 'true';
+    hd = localStorage.getItem('hd') == null ? false : localStorage.getItem('hd') === 'true';
+    infine = localStorage.getItem('infine') == null ? false : localStorage.getItem('infine') === 'true';
     lastWord = localStorage.getItem('lastWord') == null ? {} : JSON.parse(localStorage.getItem('lastWord'));
 }
 loadFromCookie();
@@ -190,7 +245,7 @@ function selectOption(selectedDiv) {
     });
     selectedDiv.classList.add('selected');
     length = parseInt(selectedDiv.dataset.value);
-    saveToCookie(length,use_mini,see,circl,strict,lastWord);
+    saveToCookie();
     costom = false;
     history.pushState(null, '', window.location.pathname);
     isWin = false;
@@ -227,6 +282,8 @@ function selectOption(selectedDiv) {
 document.getElementById('easy').checked=use_mini;
 document.getElementById('circle').checked=circl;
 document.getElementById('strict').checked=strict;
+document.getElementById('hard').checked=hd;
+document.getElementById('infine').checked=infine;
 var switches = document.querySelectorAll('.switch input[type="checkbox"]');
 switches.forEach(function(switchElement) {
     switchElement.addEventListener('change', function(event) {
@@ -234,15 +291,44 @@ switches.forEach(function(switchElement) {
         var switchState = event.target.checked;
         if (switchId === 'easy') {
             use_mini = switchState;
-            saveToCookie(length,use_mini,see,circl,strict,lastWord);
+            saveToCookie();
         }
         if (switchId === 'circle') {
             circl = switchState;
-            saveToCookie(length,use_mini,see,circl,strict,lastWord);
+            saveToCookie();
         }
         if (switchId === 'strict') {
             strict = switchState;
-            saveToCookie(length,use_mini,see,circl,strict,lastWord);
+            saveToCookie();
+        }
+        if (switchId === 'infine') {
+            infine = switchState;
+            saveToCookie();
+        }
+        if (switchId === 'hard') {
+            hd = switchState;
+            var options = document.querySelectorAll('.option');
+            if(switchState==true) {
+            saveToCookie();    options.forEach(function(option) {
+                    if(parseInt(option.dataset.value)===10||parseInt(option.dataset.value)===11)
+                        option.dataset.disabled="true";
+                });
+            }
+            else {
+                options.forEach(function(option) {
+                    if(parseInt(option.dataset.value)===10||parseInt(option.dataset.value)===11)
+                        option.dataset.disabled="false";
+                });
+            }
+            if(switchState==true&&(length==10||length==11)) {
+                let number=9;
+                length=number;
+                options.forEach(function(option) {
+                    option.classList.remove('selected');
+                    if (parseInt(option.dataset.value)===number)option.classList.add('selected');
+                });
+            }
+            
         }
         costom = false;
         history.pushState(null, '', window.location.pathname);
@@ -300,14 +386,14 @@ document.getElementById('see').addEventListener('click', () => {
         document.getElementById('see').style.left="335px";
         document.getElementById('input').type = 'text';
         see=true;
-        saveToCookie(length,use_mini,see,circl,strict,lastWord);
+        saveToCookie();
     }
     else if(document.getElementById('see').className==="fa fa-eye-slash") {
         document.getElementById('see').className="fa fa-eye";
         document.getElementById('see').style.left="336px";
         document.getElementById('input').type = 'password';
         see=false;
-        saveToCookie(length,use_mini,see,circl,strict,lastWord);
+        saveToCookie();
     }
 });
 document.getElementById('Share').addEventListener('click', () => {
@@ -344,13 +430,13 @@ document.getElementById('set').style.transform = `scale(${Math.min(window.innerH
 document.getElementById('ans').style.transform = `scale(${Math.min(window.innerHeight/747,window.innerWidth/848)})`;
 document.getElementById('top').style.transform = `scale(${Math.min(window.innerHeight/747,window.innerWidth/848)}) translateY(${10*Math.min(window.innerHeight/747,window.innerWidth/848)}px)`;
 document.getElementById('giveUp').addEventListener('click', () => {
-    currentRow = 6;
+    currentRow = tries;
     if (isWin) {
         const result = document.getElementById('win');
         result.style.visibility = 'visible';
         result.style.opacity = '1';
     }
-    else if (currentRow == 6) {
+    else if (currentRow == tries) {
         const result = document.getElementById('lost');
         result.style.visibility = 'visible';
         result.style.opacity = '1';
@@ -379,13 +465,27 @@ document.getElementById('closeSetting').addEventListener('click', () => {
 function createBoard() {
     const board = document.getElementById('board');
     board.innerHTML = '';
-    for (let i = 0; i < 6; i++) {
+    for (let i = 0; i < tries; i++) {
         const row = document.createElement('div');
         row.className = 'board-row';
+        row.style.marginLeft = '10px';
+         row.style.marginRight = '10px';
         for (let j = 0; j < (costom?length2:length); j++) {
             const tile = document.createElement('div');
             tile.className = 'tile';
             row.appendChild(tile);
+        }
+        if(hd) {
+            const green = document.createElement('div');
+            green.className = 'tile';
+            green.style.backgroundColor = '#dde';
+            green.style.border = '2px solid #dde';
+            row.appendChild(green);
+            const yellow = document.createElement('div');
+            yellow.className = 'tile';
+            yellow.style.backgroundColor = '#dde';
+            yellow.style.border = '2px solid #dde';
+            row.appendChild(yellow);
         }
         board.appendChild(row);
     }
@@ -424,7 +524,7 @@ function handleSubmit() {
         },1000));
         return;
     }
-    let result = '0'.repeat(costom?length2:length);
+    
     if (!(ext_words[costom?length2:length].includes(guess)))
     {
         const mess = document.getElementById('cant');
@@ -441,7 +541,7 @@ function handleSubmit() {
         return;
     }
     if(strict) {
-        let jd=judge();
+        let jd=hd?judge2():judge();
         if(jd!="accept") {
             const mess = document.getElementById('cant');
             messages.forEach(element => clearTimeout(element));
@@ -457,7 +557,8 @@ function handleSubmit() {
             return;
         }
     }
-    if (currentRow < 6) {
+    if (currentRow < tries||infine) {
+        let result = '0'.repeat(costom?length2:length);
         for (let i = 0; i < (costom?length2:length); i++) {
             if (guess[i] === targetWord[i]) 
             {
@@ -482,17 +583,37 @@ function handleSubmit() {
         }
         const rows = document.querySelectorAll('.board-row');
         const tiles = rows[currentRow].querySelectorAll('.tile');
+        if(hd)
+        {
+            let grr=0;
+            let yee=0;
+            for(let i=0;i<result.length;i++) {
+                if(result[i]==1)yee++;
+                else if(result[i]==2)grr++;
+            }
+            guesses.push([guess,grr,yee]);
+            tiles[result.length].style.color = '#f8f8ff';
+            tiles[result.length].style.backgroundColor = '#4b4';
+            tiles[result.length].style.border = '2px solid #4b4';
+            tiles[result.length].textContent=grr;
+            tiles[result.length+1].style.color = '#f8f8ff';
+            tiles[result.length+1].style.backgroundColor = '#ec3';
+            tiles[result.length+1].style.border = '2px solid #ec3';
+            tiles[result.length+1].textContent=yee;
+        }
         for (let i = 0; i < (costom?length2:length); i++) {
             const key = document.getElementById(guess[i]);
             let num = countLetter(guess, result, guess[i]);
             if (result[i] === '0') {
                 hasn[i].push(guess[i]);
                 maxxx[guess[i]]=true;
-                tiles[i].style.color = '#f8f8ff';
-                tiles[i].style.backgroundColor = '#aac';
-                tiles[i].style.border = '2px solid #aac';
-                if (key.className === 'keys key') {
-                    key.className = 'keys gy-key';
+                if(!hd) {
+                    tiles[i].style.color = '#f8f8ff';
+                    tiles[i].style.backgroundColor = '#aac';
+                    tiles[i].style.border = '2px solid #aac';
+                    if (key.className === 'keys key') {
+                        key.className = 'keys gy-key';
+                    }
                 }
             }
             else if (result[i] === '2') {
@@ -502,10 +623,12 @@ function handleSubmit() {
                 }
                 has[i].push(guess[i]);
                 Tile[i].className = 'grTile';
-                tiles[i].style.color = '#f8f8ff';
-                tiles[i].style.backgroundColor = '#4b4';
-                tiles[i].style.border = '2px solid #4b4';
-                key.className = 'keys gr-key';
+                if(!hd) {
+                    tiles[i].style.color = '#f8f8ff';
+                    tiles[i].style.backgroundColor = '#4b4';
+                    tiles[i].style.border = '2px solid #4b4';
+                    key.className = 'keys gr-key';
+                }
                 if(hasright[guess[i]]>1) {
                     key.setAttribute('data-after-content', hasright[guess[i]]);
                 }
@@ -525,11 +648,13 @@ function handleSubmit() {
                         if(Tile[j].textContent === guess[i]&&Tile[j].className==='yeTile')Tile[j].className = 'Tile';
                     }
                 }
-                tiles[i].style.color = '#f8f8ff';
-                tiles[i].style.backgroundColor = '#ec3';
-                tiles[i].style.border = '2px solid #ec3';
-                if (key.className != 'keys gr-key') {
-                    key.className = 'keys ye-key';
+                if(!hd) {
+                    tiles[i].style.color = '#f8f8ff';
+                    tiles[i].style.backgroundColor = '#ec3';
+                    tiles[i].style.border = '2px solid #ec3';
+                    if (key.className != 'keys gr-key') {
+                        key.className = 'keys ye-key';
+                    }
                 }
                 if(hasright[guess[i]]>1) {
                     key.setAttribute('data-after-content', hasright[guess[i]]);
@@ -554,26 +679,54 @@ function handleSubmit() {
                 }
             },200);
         }
-        else if (currentRow == 6) {
-            const result = document.getElementById('lost');
-            result.style.visibility = 'visible';
-            result.style.opacity = '1';
-            setTimeout(()=> {
-                document.getElementById('overlay').style.visibility = 'visible';
-                document.getElementById('overlay').style.opacity = '1';
-                if (document.getElementById('answerMean').clientHeight > 41) {
-                    document.getElementById('answerMean').style.textAlign = "left";
+        else if (currentRow >= tries) {
+            if(infine) {
+                const board = document.getElementById('board');
+                const row = document.createElement('div');
+                row.className = 'board-row';
+                row.style.marginLeft = '10px';
+                row.style.marginRight = '10px';
+                for (let j = 0; j < (costom?length2:length); j++) {
+                    const tile = document.createElement('div');
+                    tile.className = 'tile';
+                    row.appendChild(tile);
                 }
-                else {
-                    document.getElementById('answerMean').style.textAlign = "center";
+                if(hd) {
+                    const green = document.createElement('div');
+                    green.className = 'tile';
+                    green.style.backgroundColor = '#dde';
+                    green.style.border = '2px solid #dde';
+                    row.appendChild(green);
+                    const yellow = document.createElement('div');
+                    yellow.className = 'tile';
+                    yellow.style.backgroundColor = '#dde';
+                    yellow.style.border = '2px solid #dde';
+                    row.appendChild(yellow);
                 }
-            },200);
+                board.appendChild(row);
+                row.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+            else {
+                const result = document.getElementById('lost');
+                result.style.visibility = 'visible';
+                result.style.opacity = '1';
+                setTimeout(()=> {
+                    document.getElementById('overlay').style.visibility = 'visible';
+                    document.getElementById('overlay').style.opacity = '1';
+                    if (document.getElementById('answerMean').clientHeight > 41) {
+                        document.getElementById('answerMean').style.textAlign = "left";
+                    }
+                    else {
+                        document.getElementById('answerMean').style.textAlign = "center";
+                    }
+                },200);
+            }
         }
     }
 }
 function updateTile(key) {
     if (isWin) return;
-    if (currentRow == 6 && key != '\u21b5') return;
+    if(!infine)if (currentRow == tries && key != '\u21b5') return;
     const rows = document.querySelectorAll('.board-row');
     const tiles = rows[currentRow].querySelectorAll('.tile');
     if (key === '\u232b') {
@@ -620,14 +773,6 @@ function createKeyboard() {
         }
         board.appendChild(row);
     }
-    if(circl&&lastWord[costom?length2:length]!=undefined) {
-        for (var i = 0; i < (costom?length2:length); i++) {
-            updateTile(lastWord[costom?length2:length][i].toUpperCase());
-        }
-        updateTile('\u21b5');
-    }
-    lastWord[costom?length2:length]=targetWord;
-    saveToCookie((costom?length2:length),use_mini,see,circl,strict,lastWord);
     for (let i = 0; i < keys.length; i++) {
         hasright[keys[i]] = 0;
         hasalright[keys[i]] = 0;
@@ -635,10 +780,19 @@ function createKeyboard() {
     }
     has=[];
     hasn=[];
+    guesses=[];
     for (let i = 0; i < (costom?length2:length); i++) {
         has.push([]);
         hasn.push([]);
     }
+    if(circl&&lastWord[costom?length2:length]!=undefined) {
+        for (var i = 0; i < (costom?length2:length); i++) {
+            updateTile(lastWord[costom?length2:length][i].toUpperCase());
+        }
+        updateTile('\u21b5');
+    }
+    lastWord[costom?length2:length]=targetWord;
+    saveToCookie();
 }
 var queryString = window.location.search.substring(1);
 let targetWord = 'TRACE';
@@ -705,6 +859,16 @@ else {
     history.pushState(null, '', window.location.pathname);
 }
 init();
+var options_ = document.querySelectorAll('.option');
+if(hd==true&&(length==10||length==11)) {
+    let number=9;
+    length=number;
+    options_.forEach(function(option) {
+        option.classList.remove('selected');
+        if (parseInt(option.dataset.value)===number)option.classList.add('selected');
+    });
+}
+saveToCookie();
 document.addEventListener('keydown', (e) => {
     if ((e.key.match(/^[a-z]$/i) || (e.key === 'Backspace'&& !e.shiftKey) || (e.key === 'Enter'&& !e.shiftKey)) && !e.ctrlKey && !e.altKey && document.getElementById('settinglay').style.visibility != "visible") {
         event.preventDefault();
@@ -714,15 +878,17 @@ document.addEventListener('keydown', (e) => {
     else if ((e.key.match(/^[4-9]$/i)||e.key ==='a'||e.key ==='b') && !e.ctrlKey && !e.altKey && !e.shiftKey && document.activeElement!=document.getElementById('input')) {
         event.preventDefault();
         var number=e.key ==='a'?10:e.key ==='b'?11:parseInt(e.key);
-        length=number;
+        if(!hd||(e.key !='a'&&e.key !='b'))
+        {
         if(document.getElementById('settinglay').style.visibility === "visible") {
             document.getElementById('nn').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            length=number;
             var options = document.querySelectorAll('.option');
             options.forEach(function(option) {
                 option.classList.remove('selected');
                 if (parseInt(option.dataset.value)===number)option.classList.add('selected');
             });
-            saveToCookie(length,use_mini,see,circl,strict,lastWord);
+            saveToCookie();
             costom = false;
             history.pushState(null, '', window.location.pathname);
             isWin = false;
@@ -757,6 +923,7 @@ document.addEventListener('keydown', (e) => {
             createKeyboard();
         }
     }
+    }
     else if(event.ctrlKey) {
         if(e.key === 'r') {
             event.preventDefault();
@@ -776,14 +943,14 @@ document.addEventListener('keydown', (e) => {
                     document.getElementById('see').style.left="335px";
                     document.getElementById('input').type = 'text';
                     see=true;
-                    saveToCookie(length,use_mini,see,circl,strict,lastWord);
+                    saveToCookie();
                 }
                 else if(document.getElementById('see').className==="fa fa-eye-slash") {
                     document.getElementById('see').className="fa fa-eye";
                     document.getElementById('see').style.left="336px";
                     document.getElementById('input').type = 'password';
                     see=false;
-                    saveToCookie(length,use_mini,see,circl,strict,lastWord);
+                    saveToCookie();
                 }
             }
             else if(document.getElementById('settinglay').style.visibility === "visible"&&document.getElementById('input') != document.activeElement)
@@ -791,11 +958,11 @@ document.addEventListener('keydown', (e) => {
                 document.getElementById('ns').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
                 if(document.getElementById('strict').checked) {
                     document.getElementById('strict').checked=false;
-                    saveToCookie(length,use_mini,see,circl,strict,lastWord);
+                    saveToCookie();
                 }
                 else {
                     document.getElementById('strict').checked=true;
-                    saveToCookie(length,use_mini,see,circl,strict,lastWord);
+                    saveToCookie();
                 }
             } 
             else {
@@ -806,13 +973,13 @@ document.addEventListener('keydown', (e) => {
         if(e.key === 'a') {
             event.preventDefault();
             if(document.getElementById('settinglay').style.visibility != "visible") {
-                currentRow = 6;
+                currentRow = tries;
                 if (isWin) {
                     const result = document.getElementById('win');
                     result.style.visibility = 'visible';
                     result.style.opacity = '1';
                 }
-                else if (currentRow == 6) {
+                else if (currentRow == tries) {
                     const result = document.getElementById('lost');
                     result.style.visibility = 'visible';
                     result.style.opacity = '1';
@@ -834,11 +1001,11 @@ document.addEventListener('keydown', (e) => {
                 document.getElementById('nf').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
                 if(document.getElementById('easy').checked) {
                     document.getElementById('easy').checked=false;
-                    saveToCookie(length,use_mini,see,circl,strict,lastWord);
+                    saveToCookie();
                 }
                 else {
                     document.getElementById('easy').checked=true;
-                    saveToCookie(length,use_mini,see,circl,strict,lastWord);
+                    saveToCookie();
                 }
             }
         }
@@ -850,14 +1017,46 @@ document.addEventListener('keydown', (e) => {
                 document.getElementById('nc').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
                 if(document.getElementById('circle').checked) {
                     document.getElementById('circle').checked=false;
-                    saveToCookie(length,use_mini,see,circl,strict,lastWord);
+                    saveToCookie();
                 }
                 else {
                     document.getElementById('circle').checked=true;
-                    saveToCookie(length,use_mini,see,circl,strict,lastWord);
+                    saveToCookie();
                 }
             }
         }
+        if(e.key === 'h')
+        {
+            event.preventDefault();
+            if(document.getElementById('settinglay').style.visibility === "visible"&&document.getElementById('input') != document.activeElement)
+            {
+                document.getElementById('nh').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                if(document.getElementById('hard').checked) {
+                    document.getElementById('hard').checked=false;
+                    saveToCookie();
+                }
+                else {
+                    document.getElementById('hard').checked=true;
+                    saveToCookie();
+                }
+            }
+        }
+        if(e.key === 'i')
+            {
+                event.preventDefault();
+                if(document.getElementById('settinglay').style.visibility === "visible"&&document.getElementById('input') != document.activeElement)
+                {
+                    document.getElementById('ni').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    if(document.getElementById('infine').checked) {
+                        document.getElementById('infine').checked=false;
+                        saveToCookie();
+                    }
+                    else {
+                        document.getElementById('infine').checked=true;
+                        saveToCookie();
+                    }
+                }
+            }
         if(e.key === 'v')
         {
             if(document.getElementById('settinglay').style.visibility != "visible")
@@ -941,6 +1140,9 @@ document.addEventListener('keydown', (e) => {
                 document.getElementById('Copy').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
             }
         }
+    }
+    else if(e.key === ' ' && !e.ctrlKey && !e.altKey && !e.shiftKey) {
+        event.preventDefault();
     }
     else if(e.key === 'Enter' && !e.ctrlKey && !e.altKey && !e.shiftKey)
     {
