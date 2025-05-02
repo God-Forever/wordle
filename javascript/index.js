@@ -62,8 +62,8 @@ function judge2() {
             if(result[i]==1)yee++;
             else if(result[i]==2)grr++;
         }
-        if(grr!=guesses[k][1])return (guesses[k][1].toString()==0?"No green in ":(guesses[k][1].toString()+(guesses[k][1].toString()==1?" green in ":" greens in ")))+(k+1).toString()+((k+1)%10==1?"st":(k+1)%10==2?"nd":(k+1)%10==3?"rd":"th")+" guess";
-        if(yee!=guesses[k][2])return (guesses[k][2].toString()==0?"No yellow in ":(guesses[k][2].toString()+(guesses[k][2].toString()==1?" yellow in ":" yellows in ")))+(k+1).toString()+((k+1)%10==1?"st":(k+1)%10==2?"nd":(k+1)%10==3?"rd":"th")+" guess";
+        if(grr!=guesses[k][1])return (guesses[k][1]==0?"No green in ":(guesses[k][1].toString()+(guesses[k][1]==1?" green in ":" greens in ")))+(k+1).toString()+((k+1)%10==1?"st":(k+1)%10==2?"nd":(k+1)%10==3?"rd":"th")+" guess";
+        if(yee!=guesses[k][2])return (guesses[k][2]==0?"No yellow in ":(guesses[k][2].toString()+(guesses[k][2]==1?" yellow in ":" yellows in ")))+(k+1).toString()+((k+1)%10==1?"st":(k+1)%10==2?"nd":(k+1)%10==3?"rd":"th")+" guess";
     }
     return "accept";
 }
