@@ -6,14 +6,14 @@
 
 - You have to guess the hidden word in 6 tries and the color of the letters changes to show how close you are.
 
-- To start the game,  just enter any exist English word, then you'll get the feedback:
+- To start the game, just enter any exist English word, then you'll get the feedback:
 
   - **Green** - A green letter means it is in the word and in the correct spot;
 
-  - **Yellow** - A yellow letter means it is in the word but in the wrong spot; 
+  - **Yellow** - A yellow letter means it is in the word but in the wrong spot;
 
   - **Gray** - A gray letter means it is not in the target word at all.
-  
+
 - You will win if you succeed to get the answer in 6 tries, otherwise you will lose.
 
 ---
@@ -22,7 +22,7 @@
 
 **There are 2 ways to start the game:**
 
-1. **Play online** - Visit [Wordle (god-forever.github.io/wordle)](https://god-forever.github.io/wordle/ ) to play;
+1. **Play online** - Visit [Wordle (god-forever.github.io/wordle)](https://god-forever.github.io/wordle/) to play;
 
 2. **Download the resources** - Download this repository, then you can start the game by open `index.html`.
 
@@ -34,9 +34,9 @@ Our game features a simple and beautiful UI, convenient operation, and rich exte
 
 - **Wordlist**
 
-​	Determine whether the user input is a word using a wordlist containing 917270 (valid) words.
+​ Determine whether the user input is a word using a wordlist containing 917270 (valid) words.
 
-​	The answer in standard mode will be selected from a wordlist containing 86876 (valid) words.
+​ The answer in standard mode will be selected from a wordlist containing 86876 (valid) words.
 
 - **Tiles**
 
@@ -44,10 +44,10 @@ Our game features a simple and beautiful UI, convenient operation, and rich exte
 
 - **Keyboard**
 
-  We provide a virtual keyboard on the web UI. But also, you can use a physical keyboard to input words. 
-  
+  We provide a virtual keyboard on the web UI. But also, you can use a physical keyboard to input words.
+
   After you submit a word, the virtual keyboard will also be colored so that you can get hints about a certain letter.
-  
+
 - **Buttons**
 
   There are 5 buttons on the main interface, which are:
@@ -58,13 +58,13 @@ Our game features a simple and beautiful UI, convenient operation, and rich exte
 
   - **Setting** - Set the length of the word, change the game mode and generate the game with custom word.
 
-  - **Paste** - The same function as `Ctrl+V`，which is used for pasting  share links.
-  
+  - **Paste** - The same function as `Ctrl+V`，which is used for pasting share links.
+
   - **Github** - Jump to the [Github repository](https://github.com/God-Forever/wordle).
 
 - **Answer**
 
-  Click Answer or use the shortcut key `Ctrl+A` on the main interface to bring up the answer menu. The answer menu includes 2 parts, one shows you what the target word is, the other shows you what it mean in Chinese. 
+  Click Answer or use the shortcut key `Ctrl+A` on the main interface to bring up the answer menu. The answer menu includes 2 parts, one shows you what the target word is, the other shows you what it mean in Chinese.
 
   At the bottom of the menu, there are 2 buttons, one allows you to share the current word by copy a link (Shortcut key: `Ctrl+S`), another allows you to restart the game (Shortcut key: `Ctrl+R`. `Ctrl+R` on the main interface also leads to restart).
 
@@ -82,7 +82,7 @@ Our game features a simple and beautiful UI, convenient operation, and rich exte
 
   - **Strict Mode** - Players are required to input words that match all known information. For words that do not meet the requirements, they will not be accepted and feedbacks about first unmatched informations will be given to the player;
 
-  - **Hard Mode** - In standard games, each color will be displayed in its corresponding position. However, in this mode, colors will not be displayed in their positions, but count of each color will be given at the end of each line. 
+  - **Hard Mode** - In standard games, each color will be displayed in its corresponding position. However, in this mode, colors will not be displayed in their positions, but count of each color will be given at the end of each line.
 
     Unusually, due to the different ways in presenting informations in Hard Mode, there will be special feedbacks in Strict Mode when Hard Mode is on.
 
@@ -97,7 +97,7 @@ Our game features a simple and beautiful UI, convenient operation, and rich exte
 - **Annotation**
 
   You can mark by colors on the virtual keyboard by right clicking (Or long press on the mobile devices) or by press `Shift+<Corresponding key>`. You can also annotate on the submitted tiles if the **Hard Mode** is on.
-  
+
 - **PWA (Progressive Web App)**
 
   The online version of our game support PWA, which means you can install the webpage as a application on your device.
@@ -106,7 +106,7 @@ Our game features a simple and beautiful UI, convenient operation, and rich exte
 
 ### What you can do?
 
-**All code in this repository is written by [God-Forever](https://github.com/God-Forever) (Also [God Forever](https://gitee.com/GodForever) on Gitee)**, and wordlists, icons and fonts in this repository are sourced from online resources. 
+**All code in this repository is written by [God-Forever](https://github.com/God-Forever) (Also [God Forever](https://gitee.com/GodForever) on Gitee)**, and wordlists, icons and fonts in this repository are sourced from online resources.
 
 You **have** the allowence to:
 
