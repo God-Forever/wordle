@@ -22,6 +22,7 @@
             height: 100%;
             background-color: #f2f2ff;
             z-index: 1002;
+            transition: opacity 0.2s ease;
         }
         .loading-text {
             font-family: Arial, sans-serif;
@@ -203,6 +204,10 @@
                 document.head.appendChild(script);
             });
         }
+        window.addEventListener('load', function() {
+            document.getElementById('loading').style.opacity = '0';
+            setTimeout(()=> {document.getElementById('loading').style.display = 'none';},200)
+        });
         loadScript('https://gitee.com/GodForever/wordle/raw/main/javascript/word_meanings.js').catch(() => {
             return loadScript('javascript/word_meanings.js'); 
         }).then(() => {
@@ -212,9 +217,7 @@
                 loadScript('https://gitee.com/GodForever/wordle/raw/main/javascript/extend_wordlist.js').catch(() => {
                     return loadScript('javascript/extend_wordlist.js'); 
                 }).then(() => {
-                    return loadScript('javascript/index.js').then(() => {
-                        document.getElementById('loading').style.display="none";
-                    }); 
+                    return loadScript('javascript/index.js');
                 });
             });
         });
