@@ -707,7 +707,7 @@ function handleSubmit() {
                     tiles[i].style.color = '#f8f8ff';
                     tiles[i].style.backgroundColor = '#aac';
                     tiles[i].style.border = '2px solid #aac';
-                    if (key.className === 'keys key') {
+                    if (key.className === 'keys key'||key.style.opacity==0.6) {
                         key.className = 'keys gy-key';
                         key.style.opacity=1;
                     }
@@ -716,7 +716,7 @@ function handleSubmit() {
                     tiles[i].style.color = '#f8f8ff';
                     tiles[i].style.backgroundColor = '#aac';
                     tiles[i].style.border = '2px solid #aac';
-                    if (key.className === 'keys key') {
+                    if (key.className === 'keys key'||key.style.opacity==0.6) {
                         key.className = 'keys gy-key';
                         key.style.opacity=1;
                     }
