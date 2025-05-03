@@ -422,6 +422,10 @@ document.getElementById('Copy').addEventListener('click', () => {
 });
 document.getElementById('reDo').addEventListener('click', () => {costom = false;history.pushState(null, '', window.location.pathname);init()});
 window.addEventListener('resize', () => {
+    var menu = document.getElementById('contextMenu');
+    if (menu.style.display === 'block') {
+        menu.style.display = 'none';
+    }
     document.getElementById('set').style.transform = `scale(${Math.min(window.innerHeight/747,window.innerWidth/848)})`;
     document.getElementById('ans').style.transform = `scale(${Math.min(window.innerHeight/747,window.innerWidth/848)})`;
     document.getElementById('top').style.transform = `scale(${Math.min(window.innerHeight/747,window.innerWidth/848)}) translateY(${10*Math.min(window.innerHeight/747,window.innerWidth/848)}px)`;
@@ -1064,64 +1068,93 @@ saveToCookie();
 document.getElementById("Github").addEventListener("click",()=>{
     window.open('https://github.com/God-Forever/wordle', '_blank', 'noopener noreferrer').focus();
 });
-document.getElementById("Paste").addEventListener("click",()=>{
-    if(document.getElementById('settinglay').style.visibility != "visible")
-    {
-        navigator.clipboard.readText()
-        .then(text => {
-            if(text.startsWith(window.location.origin + window.location.pathname+"?"))
-            {
-                queryString=text.substring(text.indexOf("?")+1);
-                if (queryString != '')
-                {
-                    let word_=decode62(queryString);
-                    if (/^[A-Z]+$/.test(word_))
-                    {
-                        targetWord = word_;
-                        length = targetWord.length;
-                        costom = true;
-                        history.pushState(null, '', text);
-                    }
-                    else
-                    {
-                        costom = false;
-                        history.pushState(null, '', window.location.pathname);
-                    }
-                }
-                init();
-            }
-            else if(text.startsWith(window.location.origin + window.location.pathname)) {
-                costom = false;
-                history.pushState(null, '', window.location.pathname);
-                init();
-            }
-            else {
-                costom = false;
-                history.pushState(null, '', window.location.pathname);
-                init();
-                const mess = document.getElementById('cant');
-                messages.forEach(element => clearTimeout(element));
-                messages=[];
-                mess.style.color='#f77';
-                mess.textContent='Invalid url!';
-                mess.style.visibility = 'visible';
-                mess.style.opacity = '1';
-                messages.push(setTimeout(()=> {
-                    mess.style.opacity = '0';
-                    messages.push(setTimeout(()=> {mess.style.visibility = 'hidden';},200));
-                },1000));
-            }
-        })
-        .catch(err => {
-            console.error('Failed to read clipboard contents: ', err);
-        });
+document.addEventListener('contextmenu', function(event) {
+    var menu = document.getElementById('contextMenu');
+    console.log(event.target);
+    if ((!(event.target.className=='keys key'||event.target.style.opacity==0.6))&&menu.style.display === 'block') {
+        menu.style.display = 'none';
     }
 });
+document.getElementById("Paste").addEventListener("click",()=>{
+    navigator.clipboard.readText()
+    .then(text => {
+        if(text.startsWith(window.location.origin + window.location.pathname+"?"))
+        {
+            queryString=text.substring(text.indexOf("?")+1);
+            if (queryString != '')
+            {
+                let word_=decode62(queryString);
+                if (/^[A-Z]+$/.test(word_))
+                {
+                    targetWord = word_;
+                    length = targetWord.length;
+                    costom = true;
+                    history.pushState(null, '', text);
+                }
+                else
+                {
+                    costom = false;
+                    history.pushState(null, '', window.location.pathname);
+                }
+            }
+            init();
+        }
+        else if(text.startsWith(window.location.origin + window.location.pathname)) {
+            costom = false;
+            history.pushState(null, '', window.location.pathname);
+            init();
+        }
+        else {
+            costom = false;
+            history.pushState(null, '', window.location.pathname);
+            init();
+            const mess = document.getElementById('cant');
+            messages.forEach(element => clearTimeout(element));
+            messages=[];
+            mess.style.color='#f77';
+            mess.textContent='Invalid url!';
+            mess.style.visibility = 'visible';
+            mess.style.opacity = '1';
+            messages.push(setTimeout(()=> {
+                mess.style.opacity = '0';
+                messages.push(setTimeout(()=> {mess.style.visibility = 'hidden';},200));
+            },1000));
+        }
+    })
+    .catch(err => {
+        console.error('Failed to read clipboard contents: ', err);
+    });
+});
 document.addEventListener('keydown', (e) => {
-    if ((e.key.match(/^[a-z]$/i) || (e.key === 'Backspace'&& !e.shiftKey) || (e.key === 'Enter'&& !e.shiftKey)) && !e.ctrlKey && !e.altKey && document.getElementById('settinglay').style.visibility != "visible") {
+    var menu = document.getElementById('contextMenu');
+    if (menu.style.display === 'block') {
+        menu.style.display = 'none';
+    }
+    if (((e.key.match(/^[a-z]$/i)&& !e.shiftKey) || (e.key === 'Backspace'&& !e.shiftKey) || (e.key === 'Enter'&& !e.shiftKey)) && !e.ctrlKey && !e.altKey && document.getElementById('settinglay').style.visibility != "visible") {
         event.preventDefault();
         const key = e.key === 'Backspace' ? '\u232b' : e.key === 'Enter' ? '\u21b5' : e.key.toUpperCase();
         updateTile(key);
+    }
+    else if ((e.key.match(/^[a-z]$/i)) && e.shiftKey && !e.ctrlKey && !e.altKey && document.getElementById('settinglay').style.visibility != "visible") {
+        event.preventDefault();
+        const div=document.getElementById(e.key.toUpperCase());
+        if(div.className=='keys key') {
+            div.className="keys gr-key";
+            div.style.opacity=0.6;
+        }
+        else if(div.className=='keys gr-key'&&div.style.opacity==0.6) {
+            div.className="keys ye-key";
+            div.style.opacity=0.6;
+        }
+        else if(div.className=='keys ye-key'&&div.style.opacity==0.6) {
+            div.className="keys gy-key";
+            div.style.opacity=0.6;
+        }
+        else if(div.className=='keys gy-key'&&div.style.opacity==0.6) {
+            div.className="keys key";
+            div.style.opacity=1;
+        }
+
     }
     else if ((e.key.match(/^[4-9]$/i)||e.key ==='a'||e.key ==='b') && !e.ctrlKey && !e.altKey && !e.shiftKey && document.activeElement!=document.getElementById('input')) {
         event.preventDefault();
@@ -1290,21 +1323,27 @@ document.addEventListener('keydown', (e) => {
             }
         }
         if(e.key === 'i')
+        {
+            event.preventDefault();
+            if(document.getElementById('settinglay').style.visibility === "visible"&&document.getElementById('input') != document.activeElement)
             {
-                event.preventDefault();
-                if(document.getElementById('settinglay').style.visibility === "visible"&&document.getElementById('input') != document.activeElement)
-                {
-                    document.getElementById('ni').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                    if(document.getElementById('infine').checked) {
-                        document.getElementById('infine').checked=false;
-                        saveToCookie();
-                    }
-                    else {
-                        document.getElementById('infine').checked=true;
-                        saveToCookie();
-                    }
+                document.getElementById('ni').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                if(document.getElementById('infine').checked) {
+                    document.getElementById('infine').checked=false;
+                    saveToCookie();
+                }
+                else {
+                    document.getElementById('infine').checked=true;
+                    saveToCookie();
                 }
             }
+        }
+        if(e.key === 'g') {
+            event.preventDefault();
+            if(document.getElementById('settinglay').style.visibility != "visible") {
+                window.open('https://github.com/God-Forever/wordle', '_blank', 'noopener noreferrer').focus();
+            }
+        }
         if(e.key === 'v')
         {
             if(document.getElementById('settinglay').style.visibility != "visible")

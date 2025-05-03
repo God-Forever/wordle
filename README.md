@@ -74,7 +74,7 @@ Our game features a simple and beautiful UI, convenient operation, and rich exte
 
   **Custom Word** at the bottom allows you to generate a link of a custom game with a custom answer. You should just input a word and click **Copy Link** (Shortcut key: `Enter` , only when the input box is focused) , then you can share the link to your friends to challenge them. You can also just input the word in front of your friends, which needs you to change the visibility of the input text (Shortcut key: `Ctrl+S` , only when the input box is focused) . You can press `Tab` to focus or unfocus the input box.
 
-  The other options are various game modes, which you can also turn on or off by using the shortcut key `ctrl+<the first letter of the mode name>`. Here is their introductions:
+  The other options are various game modes, which you can also turn on or off by using the shortcut key `ctrl+<The first letter of the mode name>`. Here is their introductions:
 
   - **Familiar Mode** - The answer will be selected from a smaller wordlist of "The top 10000 words", which actually contains 6053 (valid) words. This mode will leads to an easier game;
 
@@ -96,7 +96,7 @@ Our game features a simple and beautiful UI, convenient operation, and rich exte
 
 - **Annotation**
 
-  You can mark by colors on the virtual keyboard by right clicking (Or long press on the mobile devices). You can also annotate on the submitted tiles if the **Hard Mode** is on.
+  You can mark by colors on the virtual keyboard by right clicking (Or long press on the mobile devices) or by press `Shift+<Corresponding key>`. You can also annotate on the submitted tiles if the **Hard Mode** is on.
   
 - **PWA (Progressive Web App)**
 
