@@ -553,6 +553,7 @@ function resubmit() {
                 tiles[i].style.border = '2px solid #aac';
                 if (key.className === 'keys key') {
                     key.className = 'keys gy-key';
+                    key.style.opacity=1;
                 }
             }
             else if (result[i] === '2') {
@@ -560,6 +561,7 @@ function resubmit() {
                 tiles[i].style.backgroundColor = '#4b4';
                 tiles[i].style.border = '2px solid #4b4';
                 key.className = 'keys gr-key';
+                key.style.opacity=1;
             }
             else {
                 tiles[i].style.color = '#f8f8ff';
@@ -567,6 +569,7 @@ function resubmit() {
                 tiles[i].style.border = '2px solid #ec3';
                 if (key.className != 'keys gr-key') {
                     key.className = 'keys ye-key';
+                    key.style.opacity=1;
                 }
             }
         }
@@ -669,6 +672,18 @@ function handleSubmit() {
             const key = document.getElementById(guess[i]);
             let num = countLetter(guess, result, guess[i]);
             let num2 = countLetter2(guess, result, guess[i]);
+            if(hd&&!canshow) {
+                tiles[i].id="tile"+idd.toString();
+                idd++;
+                tiles[i].addEventListener('contextmenu', function(event) {
+                    event.preventDefault();
+                    var menu = document.getElementById('contextMenu');
+                    menu.style.display = 'block';
+                    menu.style.left = event.pageX + 'px';
+                    menu.style.top = event.pageY + 'px';
+                    menu.dataset.id = event.target.id;
+                });
+            }
             if (result[i] === '0') {
                 hasn[i].push(guess[i]);
                 maxxx[guess[i]]=true;
@@ -678,11 +693,16 @@ function handleSubmit() {
                     tiles[i].style.border = '2px solid #aac';
                     if (key.className === 'keys key') {
                         key.className = 'keys gy-key';
+                        key.style.opacity=1;
                     }
                 }
                 else if(canshow) {
+                    tiles[i].style.color = '#f8f8ff';
+                    tiles[i].style.backgroundColor = '#aac';
+                    tiles[i].style.border = '2px solid #aac';
                     if (key.className === 'keys key') {
                         key.className = 'keys gy-key';
+                        key.style.opacity=1;
                     }
                 }
             }
@@ -701,6 +721,7 @@ function handleSubmit() {
                     tiles[i].style.backgroundColor = '#4b4';
                     tiles[i].style.border = '2px solid #4b4';
                     key.className = 'keys gr-key';
+                    key.style.opacity=1;
                 }
                 if(hasright[guess[i]]>1) {
                     key.setAttribute('data-after-content', hasright[guess[i]]);
@@ -730,6 +751,7 @@ function handleSubmit() {
                     tiles[i].style.border = '2px solid #ec3';
                     if (key.className != 'keys gr-key') {
                         key.className = 'keys ye-key';
+                        key.style.opacity=1;
                     }
                 }
                 if(hasright[guess[i]]>1) {
@@ -788,6 +810,7 @@ function handleSubmit() {
                 const result = document.getElementById('lost');
                 result.style.visibility = 'visible';
                 result.style.opacity = '1';
+                resubmit();
                 setTimeout(()=> {
                     document.getElementById('overlay').style.visibility = 'visible';
                     document.getElementById('overlay').style.opacity = '1';
@@ -802,6 +825,12 @@ function handleSubmit() {
         }
     }
 }
+document.addEventListener('click', function(event) {
+    var menu = document.getElementById('contextMenu');
+    if (menu.style.display === 'block') {
+        menu.style.display = 'none';
+    }
+});
 function updateTile(key) {
     if (isWin) return;
     if(!infine)if (currentRow == tries && key != '\u21b5') return;
@@ -825,6 +854,59 @@ function updateTile(key) {
         }
     }
 }
+var menuItems = document.getElementById('contextMenu').getElementsByTagName('li');
+menuItems[0].addEventListener('click', function() {
+    const div=document.getElementById(document.getElementById('contextMenu').dataset.id);
+    if(div.className=='keys key'||(div.className.startsWith('keys')&&div.style.opacity==0.6)) {
+        div.className="keys gr-key";
+        div.style.opacity=0.6;
+    }
+    else if(div.className=="tile") {
+        div.style.color = '#f8f8ff';
+        div.style.backgroundColor = '#4b4';
+        div.style.border = '2px solid #4b4';
+        div.style.opacity=0.6;
+    }
+});
+menuItems[1].addEventListener('click', function() {
+    const div=document.getElementById(document.getElementById('contextMenu').dataset.id);
+    if(div.className=='keys key'||(div.className.startsWith('keys')&&div.style.opacity==0.6)) {
+        div.className="keys ye-key";
+        div.style.opacity=0.6;
+    }
+    else if(div.className=="tile") {
+        div.style.color = '#f8f8ff';
+        div.style.backgroundColor = '#ec3';
+        div.style.border = '2px solid #ec3';
+        div.style.opacity=0.6;
+    }
+});
+menuItems[2].addEventListener('click', function() {
+    const div=document.getElementById(document.getElementById('contextMenu').dataset.id);
+    if(div.className=='keys key'||(div.className.startsWith('keys')&&div.style.opacity==0.6)) {
+        div.className="keys gy-key";
+        div.style.opacity=0.6;
+    }
+    else if(div.className=="tile") {
+        div.style.color = '#f8f8ff';
+        div.style.backgroundColor = '#aac';
+        div.style.border = '2px solid #aac';
+        div.style.opacity=0.6;
+    }
+});
+menuItems[3].addEventListener('click', function() {
+    const div=document.getElementById(document.getElementById('contextMenu').dataset.id);
+    if(div.className=='keys key'||(div.className.startsWith('keys')&&div.style.opacity==0.6)) {
+        div.className="keys key";
+        div.style.opacity=1;
+    }
+    else if(div.className=="tile") {
+        div.style.color = '#334';
+        div.style.backgroundColor = '#eef';
+        div.style.border = '2px solid #d3d6da';
+        div.style.opacity=1;
+    }
+});
 function createKeyboard() {
     const board = document.getElementById('keyboard');
     board.innerHTML = '';
@@ -846,6 +928,17 @@ function createKeyboard() {
                 key.textContent = char === '\u21b5' ? 'Enter' : char;
             }
             key.id = char;
+            if(char!='\u232b'&&char!='\u21b5') {
+                key.addEventListener('contextmenu', function(event) {
+                    event.preventDefault();
+                    if(!(event.target.className=='keys key'||event.target.style.opacity==0.6))return;
+                    var menu = document.getElementById('contextMenu');
+                    menu.style.display = 'block';
+                    menu.style.left = event.pageX + 'px';
+                    menu.style.top = event.pageY + 'px';
+                    menu.dataset.id = event.target.id;
+                });
+            }
             key.addEventListener('click', () => updateTile(char));
             row.appendChild(key);
         }
@@ -859,6 +952,7 @@ function createKeyboard() {
     has=[];
     hasn=[];
     guesses=[];
+    idd=0;
     for (let i = 0; i < (length); i++) {
         has.push([]);
         hasn.push([]);
@@ -872,6 +966,7 @@ function createKeyboard() {
     lastWord[length]=targetWord;
     saveToCookie();
 }
+let idd=0;
 var queryString = window.location.search.substring(1);
 let targetWord = 'TRACE';
 function init(part=false) {

@@ -53,7 +53,7 @@ body {
     font-size: 26px;
     font-weight: bold;
     background-color: #eef;
-    transition: background-color 0.2s ease,border 0.2s ease;
+    transition: color 0.2s ease,background-color 0.2s ease,border 0.2s ease,opacity 0.2s ease;
 }
 .Tile {
     font-family: 'Open Sans', 'Montserrat', sans-serif;
@@ -121,7 +121,7 @@ body {
     outline: none;
     font-size: 21.5px;
     font-weight: bold;
-    transition: background-color 0.2s ease;
+    transition: background-color 0.2s ease,opacity 0.2s ease;
 }
 .key:hover {
     background-color: #ccd;
@@ -189,7 +189,7 @@ body {
     color: #f8f8ff;
     font-size: 21.5px;
     font-weight: bold;
-    transition: background-color 0.2s ease;
+    transition: background-color 0.2s ease,opacity 0.2s ease;
 }
 .gy-key:hover {
     background-color: #99b;
@@ -212,7 +212,7 @@ body {
     color: #f8f8ff;
     font-size: 21.5px;
     font-weight: bold;
-    transition: background-color 0.2s ease;
+    transition: background-color 0.2s ease,opacity 0.2s ease;
 }
 .ye-key:hover {
     background-color: #db2;
@@ -235,7 +235,7 @@ body {
     color: #f8f8ff;
     font-size: 21.5px;
     font-weight: bold;
-    transition: background-color 0.2s ease;
+    transition: background-color 0.2s ease,opacity 0.2s ease;
 }
 .gr-key:hover {
     background-color: #3a3;
@@ -664,4 +664,24 @@ input:checked + .slider:before {
     padding: 2px 6px; 
     font-size: 12px;
     border-radius: 50%; 
+}
+#contextMenu {
+    display: none;
+    position: absolute;
+    z-index: 1000;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    background-color: #ececf7;
+    border-radius: 5px;
+}
+
+#contextMenu li {
+    padding: 10px 20px;
+    cursor: pointer;
+    display: flex;
+}
+
+#contextMenu li:hover {
+    background-color: #dcdce7;
 }
