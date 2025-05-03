@@ -111,10 +111,13 @@ Our game features a simple and beautiful UI, convenient operation, and rich exte
 You **have** the allowence to:
 
 - Play online;
+
 - Download the resources to play offline;
+
 - Based on obtaining consent, borrow some content and indicate the source.
 
 You **have no** allowence to:
 
 - Directly copy or plagiarize this repository;
+
 - Copy code from the repository without permission for purposes other than playing.
