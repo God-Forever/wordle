@@ -1041,6 +1041,60 @@ if(hd==true&&(length==10||length==11||length==9)) {
     });
 }
 saveToCookie();
+document.getElementById("top").addEventListener("paste",(event)=>{
+    if(document.getElementById('settinglay').style.visibility != "visible")
+    {
+        event.preventDefault();
+        navigator.clipboard.readText()
+        .then(text => {
+            if(text.startsWith(window.location.origin + window.location.pathname+"?"))
+            {
+                queryString=text.substring(text.indexOf("?")+1);
+                if (queryString != '')
+                {
+                    let word_=decode62(queryString);
+                    if (/^[A-Z]+$/.test(word_))
+                    {
+                        targetWord = word_;
+                        length = targetWord.length;
+                        costom = true;
+                        history.pushState(null, '', text);
+                    }
+                    else
+                    {
+                        costom = false;
+                        history.pushState(null, '', window.location.pathname);
+                    }
+                }
+                init();
+            }
+            else if(text.startsWith(window.location.origin + window.location.pathname)) {
+                costom = false;
+                history.pushState(null, '', window.location.pathname);
+                init();
+            }
+            else {
+                costom = false;
+                history.pushState(null, '', window.location.pathname);
+                init();
+                const mess = document.getElementById('cant');
+                messages.forEach(element => clearTimeout(element));
+                messages=[];
+                mess.style.color='#f77';
+                mess.textContent='Invalid url!';
+                mess.style.visibility = 'visible';
+                mess.style.opacity = '1';
+                messages.push(setTimeout(()=> {
+                    mess.style.opacity = '0';
+                    messages.push(setTimeout(()=> {mess.style.visibility = 'hidden';},200));
+                },1000));
+            }
+        })
+        .catch(err => {
+            console.error('Failed to read clipboard contents: ', err);
+        });
+    }
+});
 document.addEventListener('keydown', (e) => {
     if ((e.key.match(/^[a-z]$/i) || (e.key === 'Backspace'&& !e.shiftKey) || (e.key === 'Enter'&& !e.shiftKey)) && !e.ctrlKey && !e.altKey && document.getElementById('settinglay').style.visibility != "visible") {
         event.preventDefault();

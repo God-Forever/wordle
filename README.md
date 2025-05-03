@@ -19,7 +19,7 @@
 
 1. **Play online** - Visit [Wordle (god-forever.github.io/wordle)](https://god-forever.github.io/wordle/ ) to play;
 
-2. **Download the sourse** - Download this repository, then you can start the game by open `index.html`.
+2. **Download the resources** - Download this repository, then you can start the game by open `index.html`.
 
 ---
 
@@ -86,3 +86,18 @@ Our game features a simple and beautiful UI, convenient operation, and rich exte
 - **Annotation**
 
   You can mark by colors on the virtual keyboard by right clicking (Or long press on the mobile devices). You can also annotate on the submitted tiles if the **Hard Mode** is on.
+
+---
+
+### What you can do?
+
+**All code in this repository is written by [God-Forever](https://github.com/God-Forever) (Also [God Forever](https://gitee.com/GodForever) on Gitee)**, and wordlists, icons and fonts in this repository are sourced from online resources. You **have** the allowence to:
+
+- Play online;
+- Download the resources to play offline;
+- Based on obtaining consent, borrow some content and indicate the source.
+
+You **have no** allowence to:
+
+- Directly copy or plagiarize this repository;
+- Copy code from the repository without permission for purposes other than playing.
