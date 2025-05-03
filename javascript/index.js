@@ -551,6 +551,7 @@ function resubmit() {
                 tiles[i].style.color = '#f8f8ff';
                 tiles[i].style.backgroundColor = '#aac';
                 tiles[i].style.border = '2px solid #aac';
+                tiles[i].style.opacity=1;
                 if (key.className === 'keys key') {
                     key.className = 'keys gy-key';
                     key.style.opacity=1;
@@ -560,6 +561,7 @@ function resubmit() {
                 tiles[i].style.color = '#f8f8ff';
                 tiles[i].style.backgroundColor = '#4b4';
                 tiles[i].style.border = '2px solid #4b4';
+                tiles[i].style.opacity=1;
                 key.className = 'keys gr-key';
                 key.style.opacity=1;
             }
@@ -567,6 +569,7 @@ function resubmit() {
                 tiles[i].style.color = '#f8f8ff';
                 tiles[i].style.backgroundColor = '#ec3';
                 tiles[i].style.border = '2px solid #ec3';
+                tiles[i].style.opacity=1;
                 if (key.className != 'keys gr-key') {
                     key.className = 'keys ye-key';
                     key.style.opacity=1;
@@ -722,9 +725,9 @@ function handleSubmit() {
                     tiles[i].style.border = '2px solid #4b4';
                     key.className = 'keys gr-key';
                     key.style.opacity=1;
-                }
-                if(hasright[guess[i]]>1) {
-                    key.setAttribute('data-after-content', hasright[guess[i]]);
+                    if(hasright[guess[i]]>1) {
+                        key.setAttribute('data-after-content', hasright[guess[i]]);
+                    }
                 }
             }
             else {
@@ -753,9 +756,9 @@ function handleSubmit() {
                         key.className = 'keys ye-key';
                         key.style.opacity=1;
                     }
-                }
-                if(hasright[guess[i]]>1) {
-                    key.setAttribute('data-after-content', hasright[guess[i]]);
+                    if(hasright[guess[i]]>1) {
+                        key.setAttribute('data-after-content', hasright[guess[i]]);
+                    }
                 }
             }
         }
@@ -1041,10 +1044,12 @@ if(hd==true&&(length==10||length==11||length==9)) {
     });
 }
 saveToCookie();
-document.getElementById("top").addEventListener("paste",(event)=>{
+document.getElementById("Github").addEventListener("click",()=>{
+    window.open('https://github.com/God-Forever/wordle', '_blank', 'noopener noreferrer').focus();
+});
+document.getElementById("Paste").addEventListener("click",()=>{
     if(document.getElementById('settinglay').style.visibility != "visible")
     {
-        event.preventDefault();
         navigator.clipboard.readText()
         .then(text => {
             if(text.startsWith(window.location.origin + window.location.pathname+"?"))

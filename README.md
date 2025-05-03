@@ -45,11 +45,13 @@ Our game features a simple and beautiful UI, convenient operation, and rich exte
   
 - **Buttons**
 
-  There are 3 buttons on the main interface, which are:
-  
+  There are 5 buttons on the main interface, which are:
+
   - **Show answer (Answer)** - Show the answer to current round of the game, and if the game is not over yet, you will automatically lose;
   - **Replay** - Replay the game and reset the answer;
   - **Setting** - Set the length of the word, change the game mode and generate the game with custom word.
+  - **Paste** - The same function as `Ctrl+V`，which is used for pasting  share links.
+  - **Github** - Jump to the [Github repository](https://github.com/God-Forever/wordle).
 
 - **Answer**
 
@@ -81,11 +83,15 @@ Our game features a simple and beautiful UI, convenient operation, and rich exte
 
 - **Load the share link**
 
-  Directly visit the link obtained by clicking on **Share** or **Copy Link** will start a game with an answer depends on the link. Also, you can press `Ctrl+V` to load the share link without reload the page.
+  Directly visit the link obtained by clicking on **Share** or **Copy Link** will start a game with an answer depends on the link. Also, you can press `Ctrl+V` or click **Paste** to load the share link without reload the page.
 
 - **Annotation**
 
   You can mark by colors on the virtual keyboard by right clicking (Or long press on the mobile devices). You can also annotate on the submitted tiles if the **Hard Mode** is on.
+  
+- **PWA (Progressive Web App)**
+
+  The online version of our game support PWA, which means you can install the webpage as a application on your device.
 
 ---
 

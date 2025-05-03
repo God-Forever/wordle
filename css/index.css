@@ -257,6 +257,60 @@ body {
     opacity: 0;
     transition: opacity 0.2s ease;
 }
+#Paste {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top: 20px;
+    outline: none;
+    left: 50%;
+    border-radius: 6px;
+    width: 40px;
+    height: 40px;
+    transform: translateX(-344px);
+    background-color: #e5e5f5;
+    color: #556;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    transition: background-color 0.2s ease;
+}
+#Paste:hover {
+    color: #78f;
+    background-color: #ddf;
+}
+#Paste:active {
+    color: #67e;
+    background-color: #cce;
+}
+#Github {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top: 20px;
+    outline: none;
+    left: 50%;
+    border-radius: 6px;
+    width: 40px;
+    height: 40px;
+    transform: translateX(-391px);
+    background-color: #e5e5f5;
+    color: #556;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    transition: background-color 0.2s ease;
+}
+#Github:hover {
+    color: #78f;
+    background-color: #ddf;
+}
+#Github:active {
+    color: #67e;
+    background-color: #cce;
+}
 #settingsBtn {
     position: absolute;
     display: flex;
