@@ -5,10 +5,15 @@
 **Here are some basic rules of wordle:**
 
 - You have to guess the hidden word in 6 tries and the color of the letters changes to show how close you are.
+
 - To start the game,  just enter any exist English word, then you'll get the feedback:
+
   - **Green** - A green letter means it is in the word and in the correct spot;
+
   - **Yellow** - A yellow letter means it is in the word but in the wrong spot; 
+
   - **Gray** - A gray letter means it is not in the target word at all.
+  
 - You will win if you succeed to get the answer in 6 tries, otherwise you will lose.
 
 ---
@@ -48,9 +53,13 @@ Our game features a simple and beautiful UI, convenient operation, and rich exte
   There are 5 buttons on the main interface, which are:
 
   - **Show answer (Answer)** - Show the answer to current round of the game, and if the game is not over yet, you will automatically lose;
+
   - **Replay** - Replay the game and reset the answer;
+
   - **Setting** - Set the length of the word, change the game mode and generate the game with custom word.
+
   - **Paste** - The same function as `Ctrl+V`，which is used for pasting  share links.
+  
   - **Github** - Jump to the [Github repository](https://github.com/God-Forever/wordle).
 
 - **Answer**
@@ -97,7 +106,9 @@ Our game features a simple and beautiful UI, convenient operation, and rich exte
 
 ### What you can do?
 
-**All code in this repository is written by [God-Forever](https://github.com/God-Forever) (Also [God Forever](https://gitee.com/GodForever) on Gitee)**, and wordlists, icons and fonts in this repository are sourced from online resources. You **have** the allowence to:
+**All code in this repository is written by [God-Forever](https://github.com/God-Forever) (Also [God Forever](https://gitee.com/GodForever) on Gitee)**, and wordlists, icons and fonts in this repository are sourced from online resources. 
+
+You **have** the allowence to:
 
 - Play online;
 - Download the resources to play offline;
