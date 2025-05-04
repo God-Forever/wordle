@@ -80,7 +80,7 @@ Our game features a simple and beautiful UI, convenient operation, and rich exte
 
   - **Circle Mode** - In this mode, the first try of each game will be filled with the answer from the previous game with the same word length;
 
-  - **Strict Mode** - Players are required to input words that match all known information. For words that do not meet the requirements, they will not be accepted and feedbacks about first unmatched informations will be given to the player;
+  - **Strict Mode** - This is an upgraded version of Hard Mode in the original wordle. Players are required to input words that match all known informations. For words that do not meet the requirements, they will not be accepted and feedbacks about first unmatched informations will be given to the player;
 
   - **Hard Mode** - In standard games, each color will be displayed in its corresponding position. However, in this mode, colors will not be displayed in their positions, but count of each color will be given at the end of each line.
 

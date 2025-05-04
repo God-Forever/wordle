@@ -4,6 +4,7 @@ let hd = false;
 let guesses = [];
 let tries = 6;
 let infine = false;
+let isLost = false;
 function judge() {
   for (let i = 0; i < keys.length; i++) {
     let num = 0;
@@ -214,13 +215,51 @@ function copyToClipboard(text) {
     document.body.removeChild(textArea);
   }
 }
-function copylink() {
-  copyToClipboard(
+function generateShare() {
+  var share =
     window.location.origin +
-      window.location.pathname +
-      "?" +
-      encode62(targetWord)
-  );
+    window.location.pathname +
+    "?" +
+    encode62(targetWord) +
+    "\n";
+  if (isWin)
+    share +=
+      "I  guessed this word in " +
+      currentRow +
+      (currentRow == 1 ? " try!" : " tries!") +
+      "\n\n";
+  else share += "This word is so hard to guess!\n\n";
+  const rows = document.querySelectorAll(".board-row");
+  for (let i = 0; i < currentRow; i++) {
+    const tiles = rows[i].querySelectorAll(".tile");
+    for (let j = 0; j < length; j++) {
+      if (
+        tiles[j].style.backgroundColor == "rgb(68, 187, 68)" &&
+        tiles[j].style.opacity != 0.6
+      )
+        share += "\ud83d\udfe9";
+      else if (
+        tiles[j].style.backgroundColor == "rgb(238, 204, 51)" &&
+        tiles[j].style.opacity != 0.6
+      )
+        share += "\ud83d\udfe8";
+      else share += "\u2b1c";
+    }
+    share += "\n";
+  }
+  share += "\n";
+  share += "Game Modes on: ";
+  if (use_mini) share += "Familiar Mode, ";
+  if (circl) share += "Circle Mode, ";
+  if (strict) share += "Strict Mode, ";
+  if (hd) share += "Hard Mode, ";
+  if (infine) share += "Infinity Mode, ";
+  if (share[share.length - 2] != ",") share += "None, ";
+  share = share.substring(0, share.length - 2);
+  share += "\n\n";
+  share +=
+    "Can you guess this word?\nJust paste this text into the browser to play with me!";
+  return share;
 }
 function generateOptions() {
   var container = document.getElementById("options-container");
@@ -527,7 +566,7 @@ document.getElementById("see").addEventListener("click", () => {
   }
 });
 document.getElementById("Share").addEventListener("click", () => {
-  copylink();
+  copyToClipboard(generateShare());
 });
 document.getElementById("Copy").addEventListener("click", () => {
   var word = document.getElementById("input").value.toUpperCase();
@@ -596,13 +635,13 @@ document.getElementById("top").style.transform = `scale(${Math.min(
   10 * Math.min(window.innerHeight / 747, window.innerWidth / 848)
 }px)`;
 document.getElementById("giveUp").addEventListener("click", () => {
-  currentRow = tries;
+  isLost = true;
   if (isWin) {
     const result = document.getElementById("win");
     result.style.visibility = "visible";
     result.style.opacity = "1";
     if (hd) resubmit();
-  } else if (currentRow == tries) {
+  } else {
     const result = document.getElementById("lost");
     result.style.visibility = "visible";
     result.style.opacity = "1";
@@ -972,7 +1011,7 @@ function handleSubmit() {
         }
       }, 200);
     } else if (currentRow >= tries) {
-      if (infine) {
+      if (infine && !isLost) {
         const board = document.getElementById("board");
         const row = document.createElement("div");
         row.className = "board-row";
@@ -1025,6 +1064,7 @@ document.addEventListener("click", function (event) {
 function updateTile(key) {
   if (isWin) return;
   if (!infine) if (currentRow == tries && key != "\u21b5") return;
+  if (isLost) return;
   const rows = document.querySelectorAll(".board-row");
   const tiles = rows[currentRow].querySelectorAll(".tile");
   if (key === "\u232b") {
@@ -1177,6 +1217,7 @@ function createKeyboard() {
   hasn = [];
   guesses = [];
   idd = 0;
+  isLost = false;
   for (let i = 0; i < length; i++) {
     has.push([]);
     hasn.push([]);
@@ -1237,11 +1278,63 @@ function init() {
   createKeyboard();
 }
 if (queryString != "") {
-  let word_ = decode62(queryString);
+  let qu2 =
+    queryString.indexOf("\n") != -1
+      ? queryString.substring(0, queryString.indexOf("\n") - 1)
+      : queryString.indexOf("%20") != -1
+      ? queryString.substring(0, queryString.indexOf("%20"))
+      : queryString.indexOf(" ") != -1
+      ? queryString.substring(0, queryString.indexOf(" "))
+      : queryString;
+  let word_ = decode62(qu2);
   if (/^[A-Z]+$/.test(word_)) {
+    history.pushState(null, "", window.location.pathname + "?" + qu2);
     targetWord = word_;
     length = targetWord.length;
     costom = true;
+    if (queryString.indexOf("Game Modes on: ") != -1) {
+      let modes = queryString.substring(
+        queryString.indexOf("Game Modes on: "),
+        queryString.indexOf("Can you guess this word?")
+      );
+      if (modes.indexOf("Familiar") != -1) use_mini = true;
+      else use_mini = false;
+      if (modes.indexOf("Circle") != -1) circl = true;
+      else circl = false;
+      if (modes.indexOf("Strict") != -1) strict = true;
+      else strict = false;
+      if (modes.indexOf("Hard") != -1) hd = true;
+      else hd = false;
+      if (modes.indexOf("Infinity") != -1) infine = true;
+      else infine = false;
+      document.getElementById("easy").checked = use_mini;
+      document.getElementById("circle").checked = circl;
+      document.getElementById("strict").checked = strict;
+      document.getElementById("hard").checked = hd;
+      document.getElementById("infine").checked = infine;
+      saveToCookie();
+    } else if (queryString.indexOf("Game%20Modes%20on:%20") != -1) {
+      let modes = queryString.substring(
+        queryString.indexOf("Game%20Modes%20on:%20"),
+        queryString.indexOf("Can%20you%20guess%20this%20word?")
+      );
+      if (modes.indexOf("Familiar") != -1) use_mini = true;
+      else use_mini = false;
+      if (modes.indexOf("Circle") != -1) circl = true;
+      else circl = false;
+      if (modes.indexOf("Strict") != -1) strict = true;
+      else strict = false;
+      if (modes.indexOf("Hard") != -1) hd = true;
+      else hd = false;
+      if (modes.indexOf("Infinity") != -1) infine = true;
+      else infine = false;
+      document.getElementById("easy").checked = use_mini;
+      document.getElementById("circle").checked = circl;
+      document.getElementById("strict").checked = strict;
+      document.getElementById("hard").checked = hd;
+      document.getElementById("infine").checked = infine;
+      saveToCookie();
+    }
   } else {
     history.pushState(null, "", window.location.pathname);
   }
@@ -1271,7 +1364,6 @@ document.getElementById("Github").addEventListener("click", () => {
 });
 document.addEventListener("contextmenu", function (event) {
   var menu = document.getElementById("contextMenu");
-  console.log(event.target);
   if (
     !(
       event.target.className == "keys key" || event.target.style.opacity == 0.6
@@ -1290,12 +1382,63 @@ document.getElementById("Paste").addEventListener("click", () => {
       ) {
         queryString = text.substring(text.indexOf("?") + 1);
         if (queryString != "") {
-          let word_ = decode62(queryString);
+          let qu2 =
+            queryString.indexOf("\n") != -1
+              ? queryString.substring(0, queryString.indexOf("\n") - 1)
+              : queryString.indexOf("%20") != -1
+              ? queryString.substring(0, queryString.indexOf("%20"))
+              : queryString.indexOf(" ") != -1
+              ? queryString.substring(0, queryString.indexOf(" "))
+              : queryString;
+          let word_ = decode62(qu2);
           if (/^[A-Z]+$/.test(word_)) {
             targetWord = word_;
             length = targetWord.length;
             costom = true;
-            history.pushState(null, "", text);
+            history.pushState(null, "", window.location.pathname + "?" + qu2);
+            if (queryString.indexOf("Game Modes on: ") != -1) {
+              let modes = queryString.substring(
+                queryString.indexOf("Game Modes on: "),
+                queryString.indexOf("Can you guess this word?")
+              );
+              if (modes.indexOf("Familiar") != -1) use_mini = true;
+              else use_mini = false;
+              if (modes.indexOf("Circle") != -1) circl = true;
+              else circl = false;
+              if (modes.indexOf("Strict") != -1) strict = true;
+              else strict = false;
+              if (modes.indexOf("Hard") != -1) hd = true;
+              else hd = false;
+              if (modes.indexOf("Infinity") != -1) infine = true;
+              else infine = false;
+              document.getElementById("easy").checked = use_mini;
+              document.getElementById("circle").checked = circl;
+              document.getElementById("strict").checked = strict;
+              document.getElementById("hard").checked = hd;
+              document.getElementById("infine").checked = infine;
+              saveToCookie();
+            } else if (queryString.indexOf("Game%20Modes%20on:%20") != -1) {
+              let modes = queryString.substring(
+                queryString.indexOf("Game%20Modes%20on:%20"),
+                queryString.indexOf("Can%20you%20guess%20this%20word?")
+              );
+              if (modes.indexOf("Familiar") != -1) use_mini = true;
+              else use_mini = false;
+              if (modes.indexOf("Circle") != -1) circl = true;
+              else circl = false;
+              if (modes.indexOf("Strict") != -1) strict = true;
+              else strict = false;
+              if (modes.indexOf("Hard") != -1) hd = true;
+              else hd = false;
+              if (modes.indexOf("Infinity") != -1) infine = true;
+              else infine = false;
+              document.getElementById("easy").checked = use_mini;
+              document.getElementById("circle").checked = circl;
+              document.getElementById("strict").checked = strict;
+              document.getElementById("hard").checked = hd;
+              document.getElementById("infine").checked = infine;
+              saveToCookie();
+            }
           } else {
             costom = false;
             history.pushState(null, "", window.location.pathname);
@@ -1447,7 +1590,7 @@ document.addEventListener("keydown", (e) => {
     if (e.key === "s") {
       event.preventDefault();
       if (document.getElementById("overlay").style.visibility === "visible") {
-        copylink();
+        copyToClipboard(generateShare());
       } else if (document.getElementById("input") === document.activeElement) {
         document
           .getElementById("input")
@@ -1489,15 +1632,17 @@ document.addEventListener("keydown", (e) => {
     if (e.key === "a") {
       event.preventDefault();
       if (document.getElementById("settinglay").style.visibility != "visible") {
-        currentRow = tries;
+        isLost = true;
         if (isWin) {
           const result = document.getElementById("win");
           result.style.visibility = "visible";
           result.style.opacity = "1";
-        } else if (currentRow == tries) {
+          if (hd) resubmit();
+        } else {
           const result = document.getElementById("lost");
           result.style.visibility = "visible";
           result.style.opacity = "1";
+          if (hd) resubmit();
         }
         document.getElementById("overlay").style.visibility = "visible";
         document.getElementById("overlay").style.opacity = "1";
@@ -1605,12 +1750,69 @@ document.addEventListener("keydown", (e) => {
             ) {
               queryString = text.substring(text.indexOf("?") + 1);
               if (queryString != "") {
-                let word_ = decode62(queryString);
+                let qu2 =
+                  queryString.indexOf("\n") != -1
+                    ? queryString.substring(0, queryString.indexOf("\n") - 1)
+                    : queryString.indexOf("%20") != -1
+                    ? queryString.substring(0, queryString.indexOf("%20"))
+                    : queryString.indexOf(" ") != -1
+                    ? queryString.substring(0, queryString.indexOf(" "))
+                    : queryString;
+                let word_ = decode62(qu2);
                 if (/^[A-Z]+$/.test(word_)) {
                   targetWord = word_;
                   length = targetWord.length;
                   costom = true;
-                  history.pushState(null, "", text);
+                  history.pushState(
+                    null,
+                    "",
+                    window.location.pathname + "?" + qu2
+                  );
+                  if (queryString.indexOf("Game Modes on: ") != -1) {
+                    let modes = queryString.substring(
+                      queryString.indexOf("Game Modes on: "),
+                      queryString.indexOf("Can you guess this word?")
+                    );
+                    if (modes.indexOf("Familiar") != -1) use_mini = true;
+                    else use_mini = false;
+                    if (modes.indexOf("Circle") != -1) circl = true;
+                    else circl = false;
+                    if (modes.indexOf("Strict") != -1) strict = true;
+                    else strict = false;
+                    if (modes.indexOf("Hard") != -1) hd = true;
+                    else hd = false;
+                    if (modes.indexOf("Infinity") != -1) infine = true;
+                    else infine = false;
+                    document.getElementById("easy").checked = use_mini;
+                    document.getElementById("circle").checked = circl;
+                    document.getElementById("strict").checked = strict;
+                    document.getElementById("hard").checked = hd;
+                    document.getElementById("infine").checked = infine;
+                    saveToCookie();
+                  } else if (
+                    queryString.indexOf("Game%20Modes%20on:%20") != -1
+                  ) {
+                    let modes = queryString.substring(
+                      queryString.indexOf("Game%20Modes%20on:%20"),
+                      queryString.indexOf("Can%20you%20guess%20this%20word?")
+                    );
+                    if (modes.indexOf("Familiar") != -1) use_mini = true;
+                    else use_mini = false;
+                    if (modes.indexOf("Circle") != -1) circl = true;
+                    else circl = false;
+                    if (modes.indexOf("Strict") != -1) strict = true;
+                    else strict = false;
+                    if (modes.indexOf("Hard") != -1) hd = true;
+                    else hd = false;
+                    if (modes.indexOf("Infinity") != -1) infine = true;
+                    else infine = false;
+                    document.getElementById("easy").checked = use_mini;
+                    document.getElementById("circle").checked = circl;
+                    document.getElementById("strict").checked = strict;
+                    document.getElementById("hard").checked = hd;
+                    document.getElementById("infine").checked = infine;
+                    saveToCookie();
+                  }
                 } else {
                   costom = false;
                   history.pushState(null, "", window.location.pathname);
