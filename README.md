@@ -34,9 +34,9 @@ Our game features a simple and beautiful UI, convenient operation, and rich exte
 
 - **Wordlist**
 
-​ Determine whether the user input is a word using a wordlist containing 917270 (valid) words.
+ Determine whether the user input is a word using a wordlist containing 917270 (valid) words.
 
-​ The answer in standard mode will be selected from a wordlist containing 86876 (valid) words.
+ The answer in standard mode will be selected from a wordlist containing 86876 (valid) words.
 
 - **Tiles**
 
@@ -58,7 +58,7 @@ Our game features a simple and beautiful UI, convenient operation, and rich exte
 
   - **Setting** - Set the length of the word, change the game mode and generate the game with custom word.
 
-  - **Paste** - The same function as `Ctrl+V`，which is used for pasting share links.
+  - **Paste** - The same function as `Ctrl+V`，which is used for pasting sharing links.
 
   - **Github** - Jump to the [Github repository](https://github.com/God-Forever/wordle).
 
@@ -66,7 +66,7 @@ Our game features a simple and beautiful UI, convenient operation, and rich exte
 
   Click Answer or use the shortcut key `Ctrl+A` on the main interface to bring up the answer menu. The answer menu includes 2 parts, one shows you what the target word is, the other shows you what it mean in Chinese.
 
-  At the bottom of the menu, there are 2 buttons, one allows you to share the current word by copy a link (Shortcut key: `Ctrl+S`), another allows you to restart the game (Shortcut key: `Ctrl+R`. `Ctrl+R` on the main interface also leads to restart).
+  At the bottom of the menu, there are 2 buttons, one allows you to share your record by copy the tile colors (Also includes sharing links. Shortcut key: `Ctrl+S`), another allows you to restart the game (Shortcut key: `Ctrl+R`. `Ctrl+R` on the main interface also leads to restart).
 
 - **Setting**
 
@@ -90,9 +90,9 @@ Our game features a simple and beautiful UI, convenient operation, and rich exte
 
   - **Infinity Mode** - You can have unlimited tries without losing. You can turn on this mode if the other modes you have turned on may be too difficult to succeed within six tries.
 
-- **Load the share link**
+- **Load the sharing link**
 
-  Directly visit the link obtained by clicking on **Share** or **Copy Link** will start a game with an answer depends on the link. Also, you can press `Ctrl+V` or click **Paste** to load the share link without reload the page.
+  Directly visit the link obtained by clicking on **Share** or **Copy Link** will start a game with an answer depends on the link. Also, you can press `Ctrl+V` or click **Paste** to load the sharing link without reload the page.
 
 - **Annotation**
 
