@@ -490,14 +490,13 @@ switches.forEach(function (switchElement) {
             option.dataset.disabled = "false";
         });
       }
-      if (switchState == true && (length == 10 || length == 11)) {
-        let number = 9;
+      if (switchState == true && (length == 9 ||length == 10 || length == 11)) {
+        let number = 8;
         length = number;
         options.forEach(function (option) {
           option.classList.remove("selected");
           if (
-            parseInt(option.dataset.value) === 9 ||
-            parseInt(option.dataset.value) === number
+            parseInt(option.dataset.value) === 8
           )
             option.classList.add("selected");
         });
