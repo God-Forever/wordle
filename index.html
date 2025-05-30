@@ -1,16 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=0.5, maximum-scale=0.5, user-scalable=no">
-    <meta name="referrer" content="no-referrer">
-    <title>Wordle</title>
-    <link rel="shortcut icon" href="images/icon.png" type="image/png">
-    <link rel="stylesheet" href="css/icon.css">
-    <link rel="stylesheet" href="css/font.css">
-    <link rel="manifest" href="manifest.json">
-    <link rel="stylesheet" href="css/index.css">
-    <style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=0.5, maximum-scale=0.5, user-scalable=no">
+  <meta name="referrer" content="no-referrer">
+  <title>Wordle</title>
+  <link rel="shortcut icon" href="images/icon.png" type="image/png">
+  <link rel="stylesheet" href="css/icon.css">
+  <link rel="stylesheet" href="css/font.css">
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="css/index.css">
+  <style>
     .loading {
       position: absolute;
       display: flex;
@@ -24,11 +25,13 @@
       z-index: 1002;
       transition: opacity 0.2s ease;
     }
+
     .loading-text {
       font-family: Arial, sans-serif;
       font-size: 48px;
       color: #78f;
     }
+
     .dot {
       display: inline-block;
       width: 12px;
@@ -38,158 +41,186 @@
       margin-left: 4px;
       animation: blink 1s infinite;
     }
+
     .dot:nth-child(2) {
       animation-delay: 0.2s;
     }
+
     .dot:nth-child(3) {
       animation-delay: 0.4s;
     }
+
     @keyframes blink {
-      0% { opacity: 0; }
-      50% { opacity: 1; }
-      100% { opacity: 0; }
+      0% {
+        opacity: 0;
+      }
+
+      50% {
+        opacity: 1;
+      }
+
+      100% {
+        opacity: 0;
+      }
     }
-    </style>
+  </style>
 </head>
+
 <body>
-    <div class="loading" id="loading">
-        <div class="loading-text">Loading<span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
-    </div>
-    <div id="overlay" class="overlay">
-        <div class="popup-content" id="ans">
-            <span class="close-btn" id="closePopup">&times;</span>
-            <div style="margin-bottom: 10px; margin-top: 30px; font-weight: bold;">Answer</div>
-            <div id="answerWord"></div>
-            <hr style="display: block;height: 2px;margin: 15px 15px; border: 0;background: #ddf;">
-            <div style="margin-bottom: 20px; margin-top: 10px; font-weight: bold;">Meaning</div>
-            <div style="display:flex; justify-content: center; margin-bottom: 20px; margin-left: 12px; margin-right: 12px; ">
-                <div class="code-box" id="answerMean"></div>
-            </div>
-            <div style="display:flex;align-items: center;">
-                <div id="cpd" style="position:absolute;bottom:42px; left:37px;">Link copied!</div>
-                <div style="width:100%;display:flex;gap: 20px;">
-                    <div class="fa fa-share" id="Share" style="margin-bottom: 10px; "></div>
-                    <div class="fa fa-redo" id="RedoPopup" style="margin-bottom: 10px; "></div>
-                </div>
-            </div>
+  <div class="loading" id="loading">
+    <div class="loading-text">Loading<span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+  </div>
+  <div id="overlay" class="overlay">
+    <div class="popup-content" id="ans">
+      <span class="close-btn" id="closePopup">&times;</span>
+      <div style="margin-bottom: 10px; margin-top: 30px; font-weight: bold;">Answer</div>
+      <div id="answerWord"></div>
+      <hr style="display: block;height: 2px;margin: 15px 15px; border: 0;background: #ddf;">
+      <div style="margin-bottom: 20px; margin-top: 10px; font-weight: bold;">Meaning</div>
+      <div style="display:flex; justify-content: center; margin-bottom: 20px; margin-left: 12px; margin-right: 12px; ">
+        <div class="code-box" id="answerMean"></div>
+      </div>
+      <div style="display:flex;align-items: center;">
+        <div id="cpd" style="position:absolute;bottom:42px; left:37px;">Link copied!</div>
+        <div style="width:100%;display:flex;gap: 20px;">
+          <div class="fa fa-share" id="Share" style="margin-bottom: 10px; "></div>
+          <div class="fa fa-redo" id="RedoPopup" style="margin-bottom: 10px; "></div>
         </div>
+      </div>
     </div>
-    <div id="settinglay" class="overlay">
-        <div class="popup-content" id="set" style="overflow: hidden;">
-            <span class="close-btn" id="closeSetting">&times;</span>
-            <div style="margin-top: 30px;overflow-y: auto;max-height: 500px; margin-bottom: 10px;position: relative; ">
-                <div style="margin-bottom: 20px;font-weight: bold;" id="nn">Number of Letters</div>
-                <div id="options-container"></div>
-                <hr style="display: block;height: 2px;margin: 25px 15px; border: 0;background: #ddf;">
-                <div style="display:flex; align-items: center;">
-                    <div>
-                        <div style="margin-left: 10px;text-align: left;font-weight: bold;" id="nf">Familiar Mode</div>
-                        <div style="width:330px; margin-left: 10px;font-size: 15px;color:#aab;text-align: left;">Answer will be selected from top 10000 words</div>
-                    </div>
-                    <label class="switch" style="margin-left: auto; margin-right: 10px;">
-                        <input type="checkbox" id="easy" style="display: none;">
-                        <span class="slider round"></span>
-                    </label>
-                </div>
-                <hr style="display: block;height: 2px;margin: 25px 15px; border: 0;background: #ddf;">
-                <div style="display:flex; align-items: center;">
-                    <div>
-                        <div style="margin-left: 10px;text-align: left;font-weight: bold;" id="nc">Circle Mode</div>
-                        <div style="width:330px; margin-left: 10px;font-size: 15px;color:#aab;text-align: left;">Answer of the previous round will serve as the first guess for the next round</div>
-                    </div>
-                    <label class="switch" style="margin-left: auto; margin-right: 10px;">
-                        <input type="checkbox" id="circle" style="display: none;">
-                        <span class="slider round"></span>
-                    </label>
-                </div>
-                <hr style="display: block;height: 2px;margin: 25px 15px; border: 0;background: #ddf;">
-                <div style="display:flex; align-items: center;">
-                    <div>
-                        <div style="margin-left: 10px;text-align: left;font-weight: bold;" id="ns">Strict Mode</div>
-                        <div style="width:330px; margin-left: 10px;font-size: 15px;color:#aab;text-align: left;">Guesses must match all known informations</div>
-                    </div>
-                    <label class="switch" style="margin-left: auto; margin-right: 10px;">
-                        <input type="checkbox" id="strict" style="display: none;">
-                        <span class="slider round"></span>
-                    </label>
-                </div>
-                <hr style="display: block;height: 2px;margin: 25px 15px; border: 0;background: #ddf;">
-                <div style="display:flex; align-items: center;">
-                    <div>
-                        <div style="margin-left: 10px;text-align: left;font-weight: bold;" id="nh">Hard Mode</div>
-                        <div style="width:330px; margin-left: 10px;font-size: 15px;color:#aab;text-align: left;">Show the number of greens and yellows instead of their positions</div>
-                    </div>
-                    <label class="switch" style="margin-left: auto; margin-right: 10px;">
-                        <input type="checkbox" id="hard" style="display: none;">
-                        <span class="slider round"></span>
-                    </label>
-                </div>
-                <hr style="display: block;height: 2px;margin: 25px 15px; border: 0;background: #ddf;">
-                <div style="display:flex; align-items: center;">
-                    <div>
-                        <div style="margin-left: 10px;text-align: left;font-weight: bold;" id="ni">Infinity Mode</div>
-                        <div style="width:330px; margin-left: 10px;font-size: 15px;color:#aab;text-align: left;">Allow you to have infinite tries</div>
-                    </div>
-                    <label class="switch" style="margin-left: auto; margin-right: 10px;">
-                        <input type="checkbox" id="infine" style="display: none;">
-                        <span class="slider round"></span>
-                    </label>
-                </div>
-                <hr style="display: block;height: 2px;margin: 25px 15px; border: 0;background: #ddf;">
-                <div>
-                    <div style="font-weight: bold;">Custom Word</div>
-                    <div style="width:400px; margin-left: 10px;font-size: 15px;color:#aab;text-align: left;">Create a custom game with a word consisting of 4-11 letters</div>
-                    <input id="input" type="password" style="margin-top: 20px;" placeholder="Your word..."></input>
-                    <div id="see" class="fa fa-eye-slash" style="position: absolute; left:335px; margin-top: 32px;"></div>
-                    <div id="Copy" style="margin-top: 20px; ">Copy Link</div>
-                    <div id="cpd2" style="position:absolute;bottom:-350px; left:39px;">Link copied!</div>
-                </div>
-            </div>
+  </div>
+  <div id="settinglay" class="overlay">
+    <div class="popup-content" id="set" style="overflow: hidden;">
+      <span class="close-btn" id="closeSetting">&times;</span>
+      <div style="margin-top: 30px;overflow-y: auto;max-height: 500px; margin-bottom: 10px;position: relative; ">
+        <div style="margin-bottom: 20px;font-weight: bold;" id="nn">Number of Letters</div>
+        <div id="options-container"></div>
+        <hr style="display: block;height: 2px;margin: 25px 15px; border: 0;background: #ddf;">
+        <div style="display:flex; align-items: center;">
+          <div>
+            <div style="margin-left: 10px;text-align: left;font-weight: bold;" id="nf">Familiar Mode</div>
+            <div style="width:330px; margin-left: 10px;font-size: 15px;color:#aab;text-align: left;">Answer will be
+              selected from top 10000 words</div>
+          </div>
+          <label class="switch" style="margin-left: auto; margin-right: 10px;">
+            <input type="checkbox" id="easy" style="display: none;">
+            <span class="slider round"></span>
+          </label>
         </div>
+        <hr style="display: block;height: 2px;margin: 25px 15px; border: 0;background: #ddf;">
+        <div style="display:flex; align-items: center;">
+          <div>
+            <div style="margin-left: 10px;text-align: left;font-weight: bold;" id="nc">Circle Mode</div>
+            <div style="width:330px; margin-left: 10px;font-size: 15px;color:#aab;text-align: left;">Answer of the
+              previous round will serve as the first guess for the next round</div>
+          </div>
+          <label class="switch" style="margin-left: auto; margin-right: 10px;">
+            <input type="checkbox" id="circle" style="display: none;">
+            <span class="slider round"></span>
+          </label>
+        </div>
+        <hr style="display: block;height: 2px;margin: 25px 15px; border: 0;background: #ddf;">
+        <div style="display:flex; align-items: center;">
+          <div>
+            <div style="margin-left: 10px;text-align: left;font-weight: bold;" id="ns">Strict Mode</div>
+            <div style="width:330px; margin-left: 10px;font-size: 15px;color:#aab;text-align: left;">Guesses must match
+              all known informations</div>
+          </div>
+          <label class="switch" style="margin-left: auto; margin-right: 10px;">
+            <input type="checkbox" id="strict" style="display: none;">
+            <span class="slider round"></span>
+          </label>
+        </div>
+        <hr style="display: block;height: 2px;margin: 25px 15px; border: 0;background: #ddf;">
+        <div style="display:flex; align-items: center;">
+          <div>
+            <div style="margin-left: 10px;text-align: left;font-weight: bold;" id="nh">Hard Mode</div>
+            <div style="width:330px; margin-left: 10px;font-size: 15px;color:#aab;text-align: left;">Show the number of
+              greens and yellows instead of their positions</div>
+          </div>
+          <label class="switch" style="margin-left: auto; margin-right: 10px;">
+            <input type="checkbox" id="hard" style="display: none;">
+            <span class="slider round"></span>
+          </label>
+        </div>
+        <hr style="display: block;height: 2px;margin: 25px 15px; border: 0;background: #ddf;">
+        <div style="display:flex; align-items: center;">
+          <div>
+            <div style="margin-left: 10px;text-align: left;font-weight: bold;" id="ni">Infinity Mode</div>
+            <div style="width:330px; margin-left: 10px;font-size: 15px;color:#aab;text-align: left;">Allow you to have
+              infinite tries</div>
+          </div>
+          <label class="switch" style="margin-left: auto; margin-right: 10px;">
+            <input type="checkbox" id="infine" style="display: none;">
+            <span class="slider round"></span>
+          </label>
+        </div>
+        <hr style="display: block;height: 2px;margin: 25px 15px; border: 0;background: #ddf;">
+        <div>
+          <div style="font-weight: bold;">Custom Word</div>
+          <div style="width:400px; margin-left: 10px;font-size: 15px;color:#aab;text-align: left;">Create a custom game
+            with a word consisting of 4-11 letters</div>
+          <input id="input" type="password" style="margin-top: 20px;" placeholder="Your word..."></input>
+          <div id="see" class="fa fa-eye-slash" style="position: absolute; left:335px; margin-top: 32px;"></div>
+          <div id="Copy" style="margin-top: 20px; ">Copy Link</div>
+          <div id="cpd2" style="position:absolute;bottom:-350px; left:39px;">Link copied!</div>
+        </div>
+      </div>
     </div>
-    <ul id="contextMenu">
-        <li>Green<div style="margin-top:auto;margin-bottom:auto;margin-left:20px;width:18px;height:18px;border: 1px solid #d3d6da;background-color:#4b4;"></div></li>
-        <li>Yellow<div style="margin-top:auto;margin-bottom:auto;margin-left:auto;width:18px;height:18px;border: 1px solid #d3d6da;background-color:#ec3;"></div></li>
-        <li>Gray<div style="margin-top:auto;margin-bottom:auto;margin-left:auto;width:18px;height:18px;border: 1px solid #d3d6da;background-color:#aac;"></div></li>
-        <li>Clear</li>
-    </ul>
-    <div style="position: absolute;display: flex;justify-content: center;align-items: center;left: 0;top: 0;width: 100%;height: 100%;">
+  </div>
+  <ul id="contextMenu">
+    <li>Green<div
+        style="margin-top:auto;margin-bottom:auto;margin-left:20px;width:18px;height:18px;border: 1px solid #d3d6da;background-color:#4b4;">
+      </div>
+    </li>
+    <li>Yellow<div
+        style="margin-top:auto;margin-bottom:auto;margin-left:auto;width:18px;height:18px;border: 1px solid #d3d6da;background-color:#ec3;">
+      </div>
+    </li>
+    <li>Gray<div
+        style="margin-top:auto;margin-bottom:auto;margin-left:auto;width:18px;height:18px;border: 1px solid #d3d6da;background-color:#aac;">
+      </div>
+    </li>
+    <li>Clear</li>
+  </ul>
+  <div
+    style="position: absolute;display: flex;justify-content: center;align-items: center;left: 0;top: 0;width: 100%;height: 100%;">
     <div id="top" style="width:848px;height:747px;">
-            <div id="lost" class="win-lost">💔
-                <div style="font-size: 30px; margin-top: 2px;">&nbsp;You&nbsp;</div>
-                <div style="font-size: 30px; color: #aac; margin-top: 2px;">LOST</div>
-                <div style="font-size: 30px; margin-top: 2px;">&nbsp;!&nbsp;</div>💔
-            </div>
-            <div id="cant" class="win-lost">
-            </div>
-            <div id="win" class="win-lost">🏆
-                <div style="font-size: 30px; margin-top: 2px;">&nbsp;You&nbsp;</div>
-                <div style="font-size: 30px; color: #4b4; margin-top: 2px;">WON</div>
-                <div style="font-size: 30px; margin-top: 2px;">&nbsp;!&nbsp;</div>🏆
-            </div>
-            <div id="buttons" style="display:none;">
-                <div id="giveUp">Answer</div>
-                <div id="settingsBtn" class="fa fa-cog"></div>
-                <div id="reDo" class="fa fa-redo"></div>
-                <div id="Github" class="fa-brands fa-github"></div>
-                <div id="Paste" class="fa fa-paste"></div>
-            </div>
-            <div class="game-container">
-                <div id="board" class="board" style="max-height: 430px; overflow-y: auto;">
-                </div>
-                <div id="keyboard" class="keyboard">
-                </div>
-            </div>
+      <div id="lost" class="win-lost">💔
+        <div style="font-size: 30px; margin-top: 2px;">&nbsp;You&nbsp;</div>
+        <div style="font-size: 30px; color: #aac; margin-top: 2px;">LOST</div>
+        <div style="font-size: 30px; margin-top: 2px;">&nbsp;!&nbsp;</div>💔
+      </div>
+      <div id="cant" class="win-lost">
+      </div>
+      <div id="win" class="win-lost">🏆
+        <div style="font-size: 30px; margin-top: 2px;">&nbsp;You&nbsp;</div>
+        <div style="font-size: 30px; color: #4b4; margin-top: 2px;">WON</div>
+        <div style="font-size: 30px; margin-top: 2px;">&nbsp;!&nbsp;</div>🏆
+      </div>
+      <div id="buttons" style="display:none;">
+        <div id="giveUp">Answer</div>
+        <div id="settingsBtn" class="fa fa-cog"></div>
+        <div id="reDo" class="fa fa-redo"></div>
+        <div id="Github" class="fa-brands fa-github"></div>
+        <div id="Paste" class="fa fa-paste"></div>
+      </div>
+      <div class="game-container">
+        <div id="board" class="board" style="max-height: 430px; overflow-y: auto;">
         </div>
+        <div id="keyboard" class="keyboard">
+        </div>
+      </div>
     </div>
-    <script>
-        let meaning = null;
-        let words = null;
-        let mini_words = null;
-        let ext_words = null;
-    </script>
-    <script src="javascript/mini_wordlist.js"></script>
-    <script>
+  </div>
+  <script>
+    let meaning = null;
+    let words = null;
+    let mini_words = null;
+    let ext_words = null;
+  </script>
+  <script src="javascript/mini_wordlist.js"></script>
+  <script>
     function loadScript(url) {
       return new Promise((resolve, reject) => {
         var script = document.createElement("script");
@@ -199,7 +230,7 @@
           resolve();
         };
         script.onerror = function () {
-         reject();
+          reject();
         };
         document.head.appendChild(script);
       });
@@ -211,21 +242,24 @@
       }, 200);
     });
     loadScript(
-      "https://gitee.com/GodForever/wordle/raw/main/javascript/word_meanings.js"
+      window.location.origin.toLowerCase().startsWith("https://god-forever.github.io") ?
+        "https://gitee.com/GodForever/wordle/raw/main/javascript/word_meanings.js" : "javascript/word_meanings.js"
     )
       .catch(() => {
         return loadScript("javascript/word_meanings.js");
       })
       .then(() => {
         loadScript(
-          "https://gitee.com/GodForever/wordle/raw/main/javascript/wordlist.js"
+          window.location.origin.toLowerCase().startsWith("https://god-forever.github.io") ?
+            "https://gitee.com/GodForever/wordle/raw/main/javascript/wordlist.js" : "javascript/wordlist.js"
         )
           .catch(() => {
             return loadScript("javascript/wordlist.js");
           })
           .then(() => {
-           loadScript(
-              "https://gitee.com/GodForever/wordle/raw/main/javascript/extend_wordlist.js"
+            loadScript(
+              window.location.origin.toLowerCase().startsWith("https://god-forever.github.io") ?
+                "https://gitee.com/GodForever/wordle/raw/main/javascript/extend_wordlist.js" : "javascript/extend_wordlist.js"
             )
               .catch(() => {
                 return loadScript("javascript/extend_wordlist.js");
@@ -235,6 +269,7 @@
               });
           });
       });
-    </script>
+  </script>
 </body>
+
 </html>

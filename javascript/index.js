@@ -447,6 +447,92 @@ document.getElementById("strict").checked = strict;
 document.getElementById("hard").checked = hd;
 document.getElementById("infine").checked = infine;
 var switches = document.querySelectorAll('.switch input[type="checkbox"]');
+function chg(switchId,switchState) {
+  if (switchId === "easy") {
+    use_mini = switchState;
+    saveToCookie();
+  }
+  if (switchId === "circle") {
+    circl = switchState;
+    saveToCookie();
+  }
+  if (switchId === "strict") {
+    strict = switchState;
+    saveToCookie();
+  }
+  if (switchId === "infine") {
+    infine = switchState;
+    saveToCookie();
+  }
+  if (switchId === "hard") {
+    hd = switchState;
+    var options = document.querySelectorAll(".option");
+    if (switchState == true) {
+      saveToCookie();
+      options.forEach(function (option) {
+        if (
+          parseInt(option.dataset.value) === 9 ||
+          parseInt(option.dataset.value) === 10 ||
+          parseInt(option.dataset.value) === 11
+        )
+          option.dataset.disabled = "true";
+      });
+    } else {
+      options.forEach(function (option) {
+        if (
+          parseInt(option.dataset.value) === 9 ||
+          parseInt(option.dataset.value) === 10 ||
+          parseInt(option.dataset.value) === 11
+        )
+          option.dataset.disabled = "false";
+      });
+    }
+    if (switchState == true && (length == 9 ||length == 10 || length == 11)) {
+      let number = 8;
+      length = number;
+      options.forEach(function (option) {
+        option.classList.remove("selected");
+        if (
+          parseInt(option.dataset.value) === 8
+        )
+          option.classList.add("selected");
+      });
+    }
+  }
+  costom = false;
+  history.pushState(null, "", window.location.pathname);
+  isWin = false;
+  let target = [];
+  if (use_mini) target = mini_words[length];
+  else target = words[length];
+  const randomIndex = Math.floor(Math.random() * target.length);
+  targetWord = target[randomIndex].toUpperCase();
+  let contain = document.getElementById("answerWord");
+  contain.innerHTML = "";
+  Tile = [];
+  for (var i = 0; i < targetWord.length; i++) {
+    var div = document.createElement("div");
+    div.textContent = targetWord[i];
+    div.className = "Tile";
+    Tile.push(div);
+    contain.appendChild(div);
+  }
+  document.getElementById("answerMean").textContent =
+    meaning[targetWord] === undefined ? "暂无译义" : meaning[targetWord];
+  currentRow = 0;
+  currentTile = 0;
+  guess = "";
+  messages = [];
+  document.getElementById("buttons").style.display = "flex";
+  document.getElementById("win").style.visibility = "hidden";
+  document.getElementById("win").style.opacity = "0";
+  document.getElementById("lost").style.visibility = "hidden";
+  document.getElementById("lost").style.opacity = "0";
+  document.getElementById("cant").style.visibility = "hidden";
+  document.getElementById("cant").style.opacity = "0";
+  createBoard();
+  createKeyboard();
+}
 switches.forEach(function (switchElement) {
   switchElement.addEventListener("change", function (event) {
     var switchId = event.target.id;
@@ -1618,10 +1704,10 @@ document.addEventListener("keydown", (e) => {
           .scrollIntoView({ behavior: "smooth", block: "nearest" });
         if (document.getElementById("strict").checked) {
           document.getElementById("strict").checked = false;
-          saveToCookie();
+          chg("strict",false);
         } else {
           document.getElementById("strict").checked = true;
-          saveToCookie();
+          chg("strict",true);
         }
       } else {
         document.getElementById("settinglay").style.visibility = "visible";
@@ -1663,10 +1749,10 @@ document.addEventListener("keydown", (e) => {
           .scrollIntoView({ behavior: "smooth", block: "nearest" });
         if (document.getElementById("easy").checked) {
           document.getElementById("easy").checked = false;
-          saveToCookie();
+          chg("easy",false);
         } else {
           document.getElementById("easy").checked = true;
-          saveToCookie();
+          chg("easy",true);
         }
       }
     }
@@ -1681,10 +1767,10 @@ document.addEventListener("keydown", (e) => {
           .scrollIntoView({ behavior: "smooth", block: "nearest" });
         if (document.getElementById("circle").checked) {
           document.getElementById("circle").checked = false;
-          saveToCookie();
+          chg("circle",false);
         } else {
           document.getElementById("circle").checked = true;
-          saveToCookie();
+          chg("circle",true);
         }
       }
     }
@@ -1699,10 +1785,10 @@ document.addEventListener("keydown", (e) => {
           .scrollIntoView({ behavior: "smooth", block: "nearest" });
         if (document.getElementById("hard").checked) {
           document.getElementById("hard").checked = false;
-          saveToCookie();
+          chg("hard",false);
         } else {
           document.getElementById("hard").checked = true;
-          saveToCookie();
+          chg("hard",true);
         }
       }
     }
@@ -1717,10 +1803,10 @@ document.addEventListener("keydown", (e) => {
           .scrollIntoView({ behavior: "smooth", block: "nearest" });
         if (document.getElementById("infine").checked) {
           document.getElementById("infine").checked = false;
-          saveToCookie();
+          chg("infine",false);
         } else {
           document.getElementById("infine").checked = true;
-          saveToCookie();
+          chg("infine",true);
         }
       }
     }
