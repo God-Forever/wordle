@@ -50,13 +50,25 @@ def Remove(word,mean=True,ext=True,std=True,mini=True):
         return
     length=len(word)
     if ext:
-        ext_words[str(length)].remove(word.upper())
+        try:
+            ext_words[str(length)].remove(word.upper())
+        except ValueError:
+            pass
     if std:
-        words[str(length)].remove(word.upper())
+        try:
+            words[str(length)].remove(word.upper())
+        except ValueError:
+            pass
     if mini:
-        mini_words[str(length)].remove(word.upper())
+        try:
+            mini_words[str(length)].remove(word.upper())
+        except ValueError:
+            pass
     if mean:
-        del meaning[word.upper()]
+        try:
+            del meaning[word.upper()]
+        except KeyError:
+            pass
 def RemoveExt(word):
     Add(word,mean=False,std=False,mini=False)
 def RemoveStd(word):
