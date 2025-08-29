@@ -1,6 +1,6 @@
 # Wordle
 
-[**English**|[中文](./README(Chinese Version).md)]
+[**English**|<a href="./README(Chinese Version).md">中文</a>]
 
 ### How to play wordle?
 
