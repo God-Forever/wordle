@@ -1,5 +1,7 @@
 # Wordle
 
+[**English**|[中文](./README(Chinese Version).md)]
+
 ### How to play wordle?
 
 **Here are some basic rules of wordle:**
@@ -101,6 +103,10 @@ Our game features a simple and beautiful UI, convenient operation, and rich exte
 - **PWA (Progressive Web App)**
 
   The online version of our game support PWA, which means you can install the webpage as a application on your device.
+
+- **Wordlist-edit tool **
+
+  The offline version provides a python script `word_manager.py`  which allows you to edit the wordlist on your local device. Please refer to the brief document automatically printed by the program during runtime for usage details.
 
 ---
 
