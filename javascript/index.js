@@ -955,7 +955,7 @@ function handleSubmit() {
     if (result === "2".repeat(length)) {
       isWin = true;
     }
-    let canshow = result === "0".repeat(length);
+    let canshow = (result === "0".repeat(length));
     const rows = document.querySelectorAll(".board-row");
     const tiles = rows[currentRow].querySelectorAll(".tile");
     if (hd) {
@@ -980,24 +980,32 @@ function handleSubmit() {
       let num = countLetter(guess, result, guess[i]);
       let num2 = countLetter2(guess, result, guess[i]);
       if (hd && !canshow) {
-        tiles[i].id = "tile" + idd.toString();
-        idd++;
-        tiles[i].addEventListener("contextmenu", function (event) {
-          event.preventDefault();
-          var menu = document.getElementById("contextMenu");
-          menu.style.display = "block";
-          var x = event.pageX;
-          var y = event.pageY;
-          var menuWidth = menu.offsetWidth;
-          var menuHeight = menu.offsetHeight;
-          var windowWidth = window.innerWidth;
-          var windowHeight = window.innerHeight;
-          if (x + menuWidth > windowWidth) x = windowWidth - menuWidth;
-          if (y + menuHeight > windowHeight) y = windowHeight - menuHeight;
-          menu.style.left = x + "px";
-          menu.style.top = y + "px";
-          menu.dataset.id = event.target.id;
-        });
+        if (key.className == "keys gy-key" && key.style.opacity != 0.6) {
+          tiles[i].style.color = "#f8f8ff";
+          tiles[i].style.backgroundColor = "#aac";
+          tiles[i].style.border = "2px solid #aac";
+        }
+        else {
+          tiles[i].className = "tile canshow"
+          tiles[i].id = "tile" + idd.toString();
+          idd++;
+          tiles[i].addEventListener("contextmenu", function (event) {
+            event.preventDefault();
+            var menu = document.getElementById("contextMenu");
+            menu.style.display = "block";
+            var x = event.pageX;
+            var y = event.pageY;
+            var menuWidth = menu.offsetWidth;
+            var menuHeight = menu.offsetHeight;
+            var windowWidth = window.innerWidth;
+            var windowHeight = window.innerHeight;
+            if (x + menuWidth > windowWidth) x = windowWidth - menuWidth;
+            if (y + menuHeight > windowHeight) y = windowHeight - menuHeight;
+            menu.style.left = x + "px";
+            menu.style.top = y + "px";
+            menu.dataset.id = event.target.id;
+          });
+        }
       }
       if (result[i] === "0") {
         hasn[i].push(guess[i]);
@@ -1181,7 +1189,7 @@ menuItems[0].addEventListener("click", function () {
   ) {
     div.className = "keys gr-key";
     div.style.opacity = 0.6;
-  } else if (div.className == "tile") {
+  } else if (div.className == "tile canshow") {
     div.style.color = "#f8f8ff";
     div.style.backgroundColor = "#4b4";
     div.style.border = "2px solid #4b4";
@@ -1198,7 +1206,7 @@ menuItems[1].addEventListener("click", function () {
   ) {
     div.className = "keys ye-key";
     div.style.opacity = 0.6;
-  } else if (div.className == "tile") {
+  } else if (div.className == "tile canshow") {
     div.style.color = "#f8f8ff";
     div.style.backgroundColor = "#ec3";
     div.style.border = "2px solid #ec3";
@@ -1215,7 +1223,7 @@ menuItems[2].addEventListener("click", function () {
   ) {
     div.className = "keys gy-key";
     div.style.opacity = 0.6;
-  } else if (div.className == "tile") {
+  } else if (div.className == "tile canshow") {
     div.style.color = "#f8f8ff";
     div.style.backgroundColor = "#aac";
     div.style.border = "2px solid #aac";
@@ -1232,7 +1240,7 @@ menuItems[3].addEventListener("click", function () {
   ) {
     div.className = "keys key";
     div.style.opacity = 1;
-  } else if (div.className == "tile") {
+  } else if (div.className == "tile canshow") {
     div.style.color = "#334";
     div.style.backgroundColor = "#eef";
     div.style.border = "2px solid #d3d6da";
@@ -1451,7 +1459,7 @@ document.addEventListener("contextmenu", function (event) {
   var menu = document.getElementById("contextMenu");
   if (
     !(
-      event.target.className == "keys key" || event.target.style.opacity == 0.6
+      event.target.className == "keys key" || event.target.style.opacity == 0.6 || event.target.className == "tile canshow"
     ) &&
     menu.style.display === "block"
   ) {
